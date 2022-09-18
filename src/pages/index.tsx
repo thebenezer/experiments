@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import ReactDOM from 'react-dom'
-import { Canvas } from '@react-three/fiber'
+import MyCanvas from '../components/MyCanvas'
 
 const Home: NextPage = () => {
   return (
@@ -13,16 +13,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Experiments" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Canvas className={styles.canvas}>
-        <ambientLight intensity={0.1} />
-        <directionalLight color="red" position={[0, 0, 5]} />
-        <mesh>
-          <boxGeometry />
-          <meshStandardMaterial />
-        </mesh>
-      </Canvas>
-
+      <MyCanvas></MyCanvas>
       <footer>
       </footer>
     </div>
