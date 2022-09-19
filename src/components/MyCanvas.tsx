@@ -6,10 +6,18 @@ import { useRef } from 'react';
 
 interface RiverProps {
     RiverPosition: Vector3;
+    RiverRotation?: Vector3;
+    RiverPhase?: number;
+    RiverAmplitude?: number;
+    RiverFreq?: number;
   }
   
 function River({
-            RiverPosition
+            RiverPosition,
+            RiverRotation=new Vector3(-Math.PI/2,0,0),
+            RiverPhase=0,
+            RiverAmplitude=0.5,
+            RiverFreq=1.0,
         }:RiverProps){
     const texture = useTexture("./peter-burroughs-tilingwater.jpg");
     texture.wrapS = RepeatWrapping;
@@ -18,16 +26,21 @@ function River({
     const flowingWaterShader ={
         uniforms: {
             u_time: { type:'f', value: 0 },
+            u_phase: { type:'f', value: RiverPhase },
+            u_amp: { type:'f', value: RiverAmplitude },
+            u_freq: { type:'f', value: RiverFreq },
             // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
             tex: { type:'t', value: texture },
           },
           vertexShader: `
             varying vec2 UV;
             uniform float u_time;
+            uniform float u_phase;
+            uniform float u_amp;
+            uniform float u_freq;
             void main(){
                 // Elevation
-                float elevation = sin(position.y * 1.) *
-                0.5;
+                float elevation = sin(position.y * u_freq + u_phase) * u_amp;
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+elevation,position.yz,0.1);
                 UV=uv;
             }
@@ -52,7 +65,7 @@ function River({
 
     return(
         <>
-        <mesh ref={planeRef} rotation={[-Math.PI/2,0,0]} position={RiverPosition} frustumCulled={false}>
+        <mesh ref={planeRef} rotation={[RiverRotation.x,RiverRotation.y,RiverRotation.z]} position={RiverPosition} frustumCulled={false}>
             <planeGeometry args={[1,10,100,100]}/>
             <shaderMaterial attach="material" args={[flowingWaterShader]}/>
         </mesh>
@@ -196,18 +209,18 @@ function Lake(){
 }
 
 function Plateau(){
-    const stoneTexture = useTexture("./peter-burroughs-stonetexture.jpg");
-    stoneTexture.wrapS =  stoneTexture.wrapT = MirroredRepeatWrapping;
-    stoneTexture.repeat.set(10,10);
+    const sandTexture = useTexture("./peter-burroughs-tilingdirt.jpg");
+    sandTexture.wrapS =  sandTexture.wrapT = MirroredRepeatWrapping;
+    sandTexture.repeat.set(10,10);
 
     return(
         <>
             <Box
-                args={[1000,100,1000]}
-                position={[0,-50,-450]}
+                args={[1000,1000,1000]}
+                position={[0,-500,-450]}
                 material={new MeshPhongMaterial({
-                    // color:0xaaaaaa,
-                    // map: stoneTexture
+                    color:0xffffff,
+                    map: sandTexture
                 })}
                 receiveShadow={true}
             />
@@ -235,6 +248,36 @@ function Grass(){
     )
 }
 
+interface MountainProps {
+    MountainPosition: Vector3;
+    MountainRadius: number;
+    MountainHeight: number;
+  }
+  
+function Mountains({
+            MountainPosition,
+            MountainRadius,
+            MountainHeight,
+        }:MountainProps){
+    const rockTexture = useTexture("./peter-burroughs-stonetexture.jpg");
+    rockTexture.wrapS = RepeatWrapping;
+    rockTexture.wrapT = RepeatWrapping;
+
+    return(
+        <>
+            <Cone
+                args={[MountainRadius,MountainHeight]}
+                position={MountainPosition}
+                material={new MeshPhongMaterial({
+                    color:0xD0B49F,
+                    map: rockTexture
+                })}
+                castShadow={true}
+            />
+       </>
+    )
+}
+
 export default function MyCanvas() {
     
     return(
@@ -258,16 +301,33 @@ export default function MyCanvas() {
                 <OrbitControls></OrbitControls>
                 <River RiverPosition={new Vector3(0,0.05,.10)} ></River>
                 <River RiverPosition={new Vector3(-9.55,0.05,-99.900)}></River>
+                <River 
+                    RiverAmplitude={2} 
+                    RiverFreq={0.5} 
+                    RiverPhase={Math.PI*2} 
+                    RiverPosition={new Vector3(18.55,0.03,-180.900)}
+                    RiverRotation={new Vector3(-Math.PI/2,0,-0.48)}
+                />
                 <Waterfall></Waterfall>
                 <Lake></Lake>
                 <Grass></Grass>
                 <Plateau></Plateau>
                 {/* <Box args={[1000,100,1000]} position={[0,-50,-450]} material={new MeshPhongMaterial()} receiveShadow={true}></Box> */}
+                <Mountains MountainPosition={new Vector3(60,40,-85)} MountainRadius={60} MountainHeight={80}></Mountains>
+                <Mountains MountainPosition={new Vector3(30,15,0)} MountainRadius={20} MountainHeight={30}></Mountains>
+                <Mountains MountainPosition={new Vector3(-60,15,-85)} MountainRadius={60} MountainHeight={80}></Mountains>
+                <Mountains MountainPosition={new Vector3(-50,20,-10)} MountainRadius={60} MountainHeight={80}></Mountains>
                 
-                <Cone args={[60,80]} position={[40,15,-85]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
-                <Cone args={[20,30]} position={[30,15,0]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
-                <Cone args={[20,30]} position={[-30,15,-25]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
-                <Cone args={[20,30]} position={[-30,15,15]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
+                <Mountains MountainPosition={new Vector3(-80,40,-180)} MountainRadius={60} MountainHeight={80}></Mountains>
+                <Mountains MountainPosition={new Vector3(90,40,-150)} MountainRadius={60} MountainHeight={90}></Mountains>
+                <Mountains MountainPosition={new Vector3(-2,5,-150)} MountainRadius={10} MountainHeight={10}></Mountains>
+                <Mountains MountainPosition={new Vector3(20,40,-270)} MountainRadius={100} MountainHeight={140}></Mountains>
+                
+                <Mountains MountainPosition={new Vector3(200,40,-300)} MountainRadius={60} MountainHeight={80}></Mountains>
+                <Mountains MountainPosition={new Vector3(-150,40,-250)} MountainRadius={60} MountainHeight={90}></Mountains>
+                <Mountains MountainPosition={new Vector3(-150,5,-100)} MountainRadius={60} MountainHeight={80}></Mountains>
+                <Mountains MountainPosition={new Vector3(150,40,-50)} MountainRadius={60} MountainHeight={80}></Mountains>
+                
                 <Perf></Perf>
             </Canvas>
         </>
