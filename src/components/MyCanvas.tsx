@@ -1,8 +1,8 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Box, Circle, Cone, meshBounds, OrbitControls, PerspectiveCamera, Tetrahedron, useTexture } from '@react-three/drei';
+import { Box, Circle, Cone, meshBounds, OrbitControls, OrbitControlsProps, PerspectiveCamera, Tetrahedron, useTexture } from '@react-three/drei';
 import { Vector2, Mesh, RepeatWrapping, MeshPhongMaterial, ShaderMaterial, Vector3, MirroredRepeatWrapping } from 'three';
 import { Perf } from "r3f-perf";
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface RiverProps {
     RiverPosition: Vector3;
@@ -279,6 +279,16 @@ function Mountains({
 }
 
 export default function MyCanvas() {
+
+    //@ts-ignore
+    const orbitControlsRef = useRef<OrbitControls>(null)
+
+    
+
+    useEffect(()=>{
+        if(!orbitControlsRef.current) return;
+        orbitControlsRef.current.enabled = true
+    })
     
     return(
         <>
@@ -301,7 +311,14 @@ export default function MyCanvas() {
                     shadow-camera-bottom={-200}
                 />
                 {/* <PerspectiveCamera makeDefault/> */}
-                <OrbitControls></OrbitControls>
+                <OrbitControls 
+                    ref={orbitControlsRef} 
+                    enableDamping={true} 
+                    dampingFactor={0.04} 
+                    maxDistance={280}
+                    maxPolarAngle={Math.PI/1.8}
+                    minPolarAngle={Math.PI/6}
+                />
                 <River RiverPosition={new Vector3(0,0.05,.10)} ></River>
                 <River RiverPosition={new Vector3(-9.55,0.05,-99.900)}></River>
                 <River 
