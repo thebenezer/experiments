@@ -283,8 +283,6 @@ export default function MyCanvas() {
     //@ts-ignore
     const orbitControlsRef = useRef<OrbitControls>(null)
 
-    
-
     useEffect(()=>{
         if(!orbitControlsRef.current) return;
         orbitControlsRef.current.enabled = true
@@ -310,14 +308,13 @@ export default function MyCanvas() {
                     shadow-camera-top={200}
                     shadow-camera-bottom={-200}
                 />
-                {/* <PerspectiveCamera makeDefault/> */}
                 <OrbitControls 
                     ref={orbitControlsRef} 
                     enableDamping={true} 
                     dampingFactor={0.04} 
-                    maxDistance={280}
+                    maxDistance={250}
                     maxPolarAngle={Math.PI/1.8}
-                    minPolarAngle={Math.PI/6}
+                    minPolarAngle={Math.PI/5}
                 />
                 <River RiverPosition={new Vector3(0,0.05,.10)} ></River>
                 <River RiverPosition={new Vector3(-9.55,0.05,-99.900)}></River>
