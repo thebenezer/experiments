@@ -259,7 +259,7 @@ function Mountains({
             MountainRadius,
             MountainHeight,
         }:MountainProps){
-    const rockTexture = useTexture("./peter-burroughs-stonetexture.jpg");
+    const rockTexture = useTexture("./stonetexture.jpg");
     rockTexture.wrapS = RepeatWrapping;
     rockTexture.wrapT = RepeatWrapping;
 
@@ -282,7 +282,10 @@ export default function MyCanvas() {
     
     return(
         <>
-            <Canvas shadows>
+            <Canvas 
+                shadows
+                camera={{ fov: 75, position: [0, 10, 20] }}
+            >
                 <ambientLight intensity={0.1} />
                 <directionalLight 
                     color={0xfefefe}
