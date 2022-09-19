@@ -1,15 +1,21 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Box, Cone, meshBounds, OrbitControls, PerspectiveCamera, Tetrahedron, useTexture } from '@react-three/drei';
-import { TextureLoader, Vector2, Mesh, RepeatWrapping, MeshPhongMaterial } from 'three';
+import { Box, Circle, Cone, meshBounds, OrbitControls, PerspectiveCamera, Tetrahedron, useTexture } from '@react-three/drei';
+import { Vector2, Mesh, RepeatWrapping, MeshPhongMaterial, ShaderMaterial, Vector3, MirroredRepeatWrapping } from 'three';
 import { Perf } from "r3f-perf";
 import { useRef } from 'react';
 
-function River(){
+interface RiverProps {
+    RiverPosition: Vector3;
+  }
+  
+function River({
+            RiverPosition
+        }:RiverProps){
     const texture = useTexture("./peter-burroughs-tilingwater.jpg");
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
     const planeRef = useRef<Mesh>(null);
-    const mandelbrotShader ={
+    const flowingWaterShader ={
         uniforms: {
             u_time: { type:'f', value: 0 },
             // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
@@ -46,9 +52,9 @@ function River(){
 
     return(
         <>
-        <mesh ref={planeRef} rotation={[-Math.PI/2,0,0]} position={[0,0.05,.10]}>
-            <planeGeometry args={[1,10,10,100]}/>
-            <shaderMaterial attach="material" args={[mandelbrotShader]}/>
+        <mesh ref={planeRef} rotation={[-Math.PI/2,0,0]} position={RiverPosition} frustumCulled={false}>
+            <planeGeometry args={[1,10,100,100]}/>
+            <shaderMaterial attach="material" args={[flowingWaterShader]}/>
         </mesh>
         </>
     )
@@ -60,29 +66,39 @@ function Waterfall(){
     texture.wrapT = RepeatWrapping;
     const planeRef = useRef<Mesh>(null);
    
-    const mandelbrotShader ={
+    const flowingWaterShader ={
         uniforms: {
             u_time: { type:'f', value: 0 },
             // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
             tex: { type:'t', value: texture },
           },
           vertexShader: `
-            varying vec2 UV;
+            varying vec2 vUv;
             uniform float u_time;
             void main(){
                 // Elevation
                 // float elevation = sin(position.y * 1.) * 0.5;
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position,0.1);
-                UV=uv;
+                vUv=uv;
             }
           `,
           fragmentShader: `
-            varying vec2 UV;
+            varying vec2 vUv;
             uniform sampler2D tex;
             uniform float u_time;
             void main(){
-                gl_FragColor = texture2D(tex,vec2(UV.x,UV.y+u_time*0.2));
-                // gl_FragColor = vec4(UV,0.,1.);
+                float period = 1.;     // length of one period in frames
+                float amplitude = 0.005; 
+                vec4 inputTexture = texture2D(tex,vec2(vUv.x,vUv.y+u_time*0.2));
+                vec3 bottomFoam = mix(
+                    inputTexture.rgb,
+                    vec3(1.,1.,1.),
+                    step(
+                        vUv.y+amplitude * sin(2.*3.14 * u_time / period)+sin(vUv.x*10.+u_time*10.)*0.005,
+                        0.54
+                        )
+                    );
+                gl_FragColor = vec4(bottomFoam,1.);
             }
           `
     }
@@ -97,27 +113,161 @@ function Waterfall(){
     return(
         <>
         <mesh ref={planeRef} position={[4.8,-49.95,50.1]} frustumCulled={false}>
-            <planeGeometry args={[1,10,10,100]}/>
-            <shaderMaterial attach="material" args={[mandelbrotShader]}/>
+            <planeGeometry args={[1,10,20,100]}/>
+            <shaderMaterial attach="material" args={[flowingWaterShader]}/>
         </mesh>
         </>
     )
 }
 
-export default function MyCanvas() {
+function Lake(){
+    const texture = useTexture("./peter-burroughs-tilingwater.jpg");
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    const planeRef = useRef<Mesh>(null);
+   
+    const flowingWaterShader ={
+        uniforms: {
+            u_time: { type:'f', value: 0 },
+            // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
+            tex: { type:'t', value: texture },
+            iResolution:{ type:'v', value: new Vector2(100,100)}
+          },
+          vertexShader: `
+            varying vec2 vUv;
+            uniform float u_time;
+            void main(){
+                // Elevation
+                // float elevation = sin(position.y * 1.) * 0.5;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position,0.1);
+                vUv=uv;
+            }
+          `,
+          fragmentShader: `
+            uniform sampler2D tex;
+            uniform float u_time;
+            uniform vec2 iResolution;
 
+            varying vec2 vUv;
+            void main(){
+                float waveStrength = 0.02;
+                float frequency = 70.0;
+                float waveSpeed = 3.0;
+                vec4 sunlightColor = vec4(1.0,0.91,0.75, 1.0);
+                float sunlightStrength = 5.0;
+                float centerLight = 1.;
+                float oblique = .25; 
+
+                vec2 wavePos = vec2(0.525,0.92);
+                        
+                float modifiedTime = u_time * waveSpeed;
+                float aspectRatio = iResolution.x/iResolution.y;
+                vec2 distVec = vUv - wavePos;
+                distVec.x *= aspectRatio;
+                float distance = length(distVec);
+                
+                float multiplier = (distance < 1.0) ? ((distance-1.0)*(distance-1.0)) : 0.0;
+                float addend = (sin(frequency*distance-modifiedTime)+centerLight) * waveStrength * multiplier;
+                vec2 newTexCoord = vUv + addend*oblique;    
+                
+                vec4 colorToAdd = sunlightColor * sunlightStrength * addend;
+
+                gl_FragColor = texture2D(tex,newTexCoord+u_time*0.01)+colorToAdd;
+                // gl_FragColor = vec4(UV,0.,1.);
+            }
+          `
+    }
+
+
+    useFrame((state)=>{
+        if(!planeRef.current) return;
+        // @ts-ignore
+        planeRef.current.material.uniforms.u_time.value = state.clock.getElapsedTime();
+    });
+
+    return(
+        <>
+        <mesh ref={planeRef} position={[0,-49.05,120]} rotation={[-Math.PI/2,0,0]} frustumCulled={false}>
+            <circleGeometry args={[8,30]}/>
+            <shaderMaterial attach="material" args={[flowingWaterShader]}/>
+        </mesh>
+        </>
+    )
+}
+
+function Plateau(){
+    const stoneTexture = useTexture("./peter-burroughs-stonetexture.jpg");
+    stoneTexture.wrapS =  stoneTexture.wrapT = MirroredRepeatWrapping;
+    stoneTexture.repeat.set(10,10);
+
+    return(
+        <>
+            <Box
+                args={[1000,100,1000]}
+                position={[0,-50,-450]}
+                material={new MeshPhongMaterial({
+                    // color:0xaaaaaa,
+                    // map: stoneTexture
+                })}
+                receiveShadow={true}
+            />
+        </>
+    )
+}
+
+function Grass(){
+    const grassTexture = useTexture("./peter-burroughs-tilinggrasstexture.jpg");
+    grassTexture.wrapS =  grassTexture.wrapT = MirroredRepeatWrapping;
+    grassTexture.repeat.set(10,10);
+
+    return(
+        <>
+        <Box 
+            args={[1000,100,1000]} 
+            position={[0,-100,550]} 
+            material={new MeshPhongMaterial({
+                // color:0x00eeaa,
+                map: grassTexture
+            })} 
+            receiveShadow={true}
+        />
+        </>
+    )
+}
+
+export default function MyCanvas() {
     
     return(
         <>
             <Canvas shadows>
                 <ambientLight intensity={0.1} />
-                <directionalLight color={0xfefefe} position={[10, 10, 5]} castShadow />
+                <directionalLight 
+                    color={0xfefefe}
+                    position={[10, 10, 5]}
+                    castShadow 
+                    shadow-mapSize-height={512}
+                    shadow-mapSize-width={512}
+                    shadow-camera-near={0}
+                    shadow-camera-far={500}
+                    shadow-camera-left={-200}
+                    shadow-camera-right={200}
+                    shadow-camera-top={200}
+                    shadow-camera-bottom={-200}
+                />
                 {/* <PerspectiveCamera makeDefault/> */}
                 <OrbitControls></OrbitControls>
-                <River></River>
+                <River RiverPosition={new Vector3(0,0.05,.10)} ></River>
+                <River RiverPosition={new Vector3(-9.55,0.05,-99.900)}></River>
                 <Waterfall></Waterfall>
-                <Box args={[100,100,100]} position={[0,-50,0]} material={new MeshPhongMaterial()} receiveShadow={true}></Box>
-                <Cone args={[20,30]} position={[30,15,-15]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
+                <Lake></Lake>
+                <Grass></Grass>
+                <Plateau></Plateau>
+                {/* <Box args={[1000,100,1000]} position={[0,-50,-450]} material={new MeshPhongMaterial()} receiveShadow={true}></Box> */}
+                
+                <Cone args={[60,80]} position={[40,15,-85]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
+                <Cone args={[20,30]} position={[30,15,0]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
+                <Cone args={[20,30]} position={[-30,15,-25]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
+                <Cone args={[20,30]} position={[-30,15,15]} material={new MeshPhongMaterial()} castShadow={true}></Cone>
                 <Perf></Perf>
             </Canvas>
         </>
