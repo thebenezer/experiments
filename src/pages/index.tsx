@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import ReactDOM from 'react-dom'
-import MyCanvas from '../components/MyCanvas'
+import MyCanvas from '../components/scenes/WaterfallCanvas'
 
 const Home: NextPage = () => {
   return (

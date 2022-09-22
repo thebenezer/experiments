@@ -283,6 +283,7 @@ export default function MyCanvas() {
     //@ts-ignore
     const orbitControlsRef = useRef<OrbitControls>(null)
 
+
     useEffect(()=>{
         if(!orbitControlsRef.current) return;
         orbitControlsRef.current.enabled = true
@@ -316,13 +317,13 @@ export default function MyCanvas() {
                     maxPolarAngle={Math.PI/1.8}
                     minPolarAngle={Math.PI/5}
                 />
-                <River RiverPosition={new Vector3(0,0.05,.10)} ></River>
-                <River RiverPosition={new Vector3(-9.55,0.05,-99.900)}></River>
+                <River RiverPosition={new Vector3(0,0.09,.10)} ></River>
+                <River RiverPosition={new Vector3(-9.55,0.09,-99.900)}></River>
                 <River 
                     RiverAmplitude={2} 
                     RiverFreq={0.5} 
                     RiverPhase={Math.PI*2} 
-                    RiverPosition={new Vector3(18.55,0.03,-180.900)}
+                    RiverPosition={new Vector3(18.55,0.09,-180.900)}
                     RiverRotation={new Vector3(-Math.PI/2,0,-0.48)}
                 />
                 <Waterfall></Waterfall>
