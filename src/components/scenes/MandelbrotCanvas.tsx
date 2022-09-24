@@ -5,6 +5,17 @@ import { Perf } from "r3f-perf";
 import { useEffect, useRef } from 'react';
 import MandelbrotShader from "../shaders/MandelbrotShader";
 
+function calculateAspectScale(width:number,height:number):Vector2 {
+    const aspect = width/height;
+    const scale = new Vector2(1.,1.);
+    if (aspect>1.0) {
+        scale.y /= aspect;
+    } else {
+        scale.x *= aspect;
+    }
+    return scale;
+}
+
 interface MandelbrotProps {
     MandelbrotPosition: Vector3;
     MandelbrotRotation?: Vector3;
@@ -17,28 +28,94 @@ function MandelbrotPlane({
     const texture = useTexture("./peter-burroughs-tilingwater.jpg");
     texture.wrapS = texture.wrapT = RepeatWrapping;
     const planeRef = useRef<Mesh>(null);
-    const flowingWaterShader ={
+    const { size, mouse } = useThree();
+    const keyCodes = new Set()
+    
+    // const onMouseClick= (e:any) =>{
+    //     // @ts-ignore
+    //     planeRef.current.material.uniforms.u_pos.value.x = mouse.x * planeRef.current.material.uniforms.u_scale.value.x;
+    //     // @ts-ignore
+    //     planeRef.current.material.uniforms.u_pos.value.y = mouse.y * planeRef.current.material.uniforms.u_scale.value.y;
+    //     // console.log(mouse)
+    // }
+    
+
+
+    const mandelShader ={
         uniforms: {
             u_time: { type:'f', value: 0 },
-            // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
+            u_maxIter: { type:'f', value: 20 },
             tex: { type:'t', value: texture },
+            u_scale: { type: Vector2, value: calculateAspectScale(size.width, size.height) },
+            u_pos: { type: Vector2, value: new Vector2(0.0,0.0) },
           },
           vertexShader: MandelbrotShader.vertex,
           fragmentShader: MandelbrotShader.fragment 
     }
 
+    useEffect(() => {
+        if (!planeRef.current) return;
+        //@ts-ignore
+        planeRef.current.material.uniforms.u_scale.value = calculateAspectScale(size.width,size.height);
+    }, [size]);
 
-    useFrame((state)=>{
+    useFrame((state, mouse)=>{
         if(!planeRef.current) return;
         // @ts-ignore
         planeRef.current.material.uniforms.u_time.value = state.clock.getElapsedTime();
+        
     });
+
+    const onKeyDown = (e: any) => {
+        keyCodes.add(e.code);
+    };
+    const onKeyUp = (e: any) => {
+        keyCodes.delete(e.code);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+    useFrame(()=>{
+        if(!planeRef.current) return;
+        if(keyCodes.has('KeyZ')){
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_scale.value.x *= 0.99;
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_scale.value.y *= 0.99;
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_maxIter.value *= 1.005;
+            //@ts-ignore
+            console.log(planeRef.current.material.uniforms.u_maxIter.value);
+        }else if(keyCodes.has("KeyX")){
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_scale.value.x *= 1.01;
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_scale.value.y *= 1.01;
+            //@ts-ignore
+            planeRef.current.material.uniforms.u_maxIter.value /= 1.008;
+            //@ts-ignore
+            console.log(planeRef.current.material.uniforms.u_maxIter.value);
+        }
+
+        if(keyCodes.has("KeyW")||keyCodes.has("ArrowUp")){
+            // @ts-ignore
+            planeRef.current.material.uniforms.u_pos.value.y +=0.01 * planeRef.current.material.uniforms.u_scale.value.x;
+        }else if(keyCodes.has("KeyS")||keyCodes.has("ArrowDown")){
+            // @ts-ignore
+            planeRef.current.material.uniforms.u_pos.value.y -=0.01 * planeRef.current.material.uniforms.u_scale.value.x;
+        }else if(keyCodes.has("KeyA")||keyCodes.has("ArrowLeft")){
+            // @ts-ignore
+            planeRef.current.material.uniforms.u_pos.value.x -=0.01 * planeRef.current.material.uniforms.u_scale.value.x;
+        }else if(keyCodes.has("KeyD")||keyCodes.has("ArrowRight")){
+            // @ts-ignore
+            planeRef.current.material.uniforms.u_pos.value.x +=0.01 * planeRef.current.material.uniforms.u_scale.value.x;
+        }
+    })
 
     return(
         <>
         <mesh ref={planeRef} rotation={[MandelbrotRotation.x,MandelbrotRotation.y,MandelbrotRotation.z]} position={MandelbrotPosition} frustumCulled={false}>
             <planeGeometry args={[10,10,1,1]}/>
-            <shaderMaterial attach="material" args={[flowingWaterShader]}/>
+            <shaderMaterial attach="material" args={[mandelShader]}/>
         </mesh>
         </>
     )
