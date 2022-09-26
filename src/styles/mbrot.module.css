@@ -1,4 +1,41 @@
-.header{
+.header {
     position: absolute;
     z-index: 10;
+}
+
+.hamburger {
+    z-index: 4;
+    /* margin: auto 0px auto 20px; */
+    position: fixed;
+    top: 25px;
+    left: 30px;
+    cursor: pointer;
+}
+
+.line1,
+.line2,
+.line3 {
+    display: block;
+    content: "";
+    width: 30px;
+    height: 2px;
+    background-color: rgb(240, 240, 240);
+    margin: 5px 0 5px 0;
+    transition: all 0.5s ease;
+}
+
+.line1.close {
+    background-color: #0e0e0e;
+    transform: translate(0px, 0px) rotate(-45deg);
+}
+
+.line2.close {
+    background-color: #0e0e0e;
+    transform: rotate(45deg);
+}
+
+.line3.close {
+    background-color: #0e0e0e;
+    width: 16px;
+    transform: translate(1px, 2px) rotate(45deg);
 }

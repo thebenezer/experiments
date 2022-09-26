@@ -26,7 +26,7 @@ function MandelbrotPlane({
     MandelbrotPosition,
     MandelbrotRotation = new Vector3(0, 0, 0),
 }: MandelbrotProps) {
-    const texture = useTexture("./peter-burroughs-tilingwater.jpg");
+    const texture = useTexture("./tex.webp");
     texture.wrapS = texture.wrapT = RepeatWrapping;
     const planeRef = useRef<Mesh>(null);
     const { size, mouse } = useThree();
@@ -38,13 +38,16 @@ function MandelbrotPlane({
             u_maxIter: { type: 'f', value: 1 },
             tex: { type: 't', value: texture },
             u_scale: { type: Vector2, value: calculateAspectScale(size.width, size.height) },
-            u_pos: { type: Vector2, value: new Vector2(0.0, 0.0) },
+            u_pos: { type: Vector2, value: new Vector2(-0.70, 0.0) },
+
+            u_repeat: { type: 'f', value: 5 },
+            u_color: { type: 'f', value: 0.15 },
         },
         vertexShader: MandelbrotShader.vertex,
         fragmentShader: MandelbrotShader.fragment
     };
 
-    gsap.to(mandelShader.uniforms.u_maxIter,{value:50,duration:5.5,ease:"ease-out",delay:0.5})
+    gsap.to(mandelShader.uniforms.u_maxIter,{value:200,duration:0,ease:"ease-out",delay:0.0})
     // gsap.to(mandelShader.uniforms.u_scale.value,{x:100,duration:5.5,ease:"ease-out",delay:0.5})
     // gsap.to(mandelShader.uniforms.u_scale.value,{y:100,duration:5.5,ease:"ease-out",delay:0.5})
 
@@ -80,15 +83,21 @@ function MandelbrotPlane({
         }
 
         if (keyCodes.has("KeyW") || keyCodes.has("ArrowUp")) {
-            pos.y += 0.01 * scale.x;
+            pos.y += 0.1 * scale.x;
         } else if (keyCodes.has("KeyS") || keyCodes.has("ArrowDown")) {
-            pos.y -= 0.01 * scale.x;
+            pos.y -= 0.1 * scale.x;
         }
 
         if (keyCodes.has("KeyA") || keyCodes.has("ArrowLeft")) {
-            pos.x -= 0.01 * scale.x;
+            pos.x -= 0.1 * scale.x;
         } else if (keyCodes.has("KeyD") || keyCodes.has("ArrowRight")) {
-            pos.x += 0.01 * scale.x;
+            pos.x += 0.1 * scale.x;
+        }
+
+        if (keyCodes.has('KeyU')) {
+            mandelShader.uniforms.u_maxIter.value *= 1.005;
+        } else if (keyCodes.has("KeyI")) {
+            mandelShader.uniforms.u_maxIter.value /= 1.005;
         }
     }
 
@@ -103,7 +112,7 @@ function MandelbrotPlane({
     useFrame((state) => {
         if (!planeRef.current) return;
         // smootPos.lerp(planeRef.current.material.uniforms.u_pos.value,0.03)
-        // mandelShader.uniforms.u_time.value = state.clock.getElapsedTime();
+        mandelShader.uniforms.u_time.value = state.clock.getElapsedTime();
         updateShader();
     });
 

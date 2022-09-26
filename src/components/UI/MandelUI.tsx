@@ -17,6 +17,12 @@ const MandelUI = () => {
         <>
             <header className={styles.header}>
                 <h1>Mandelbrot</h1>
+                <div className={styles.hamburger}>
+                    <span className={styles.line1}></span>
+                    <span className={styles.line2}></span>
+                    <span className={styles.line3}></span>
+                    <span className={styles.line4}></span>
+                </div>
                 <nav>
                     <ul>
                         <li>=</li>
