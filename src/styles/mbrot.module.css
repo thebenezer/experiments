@@ -1,18 +1,22 @@
+#__next{
+    overflow: hidden;
+}
+
 .header {
-    position: absolute;
+    position: fixed;
     display: flex;
     z-index: 2;
     width: 100%;
 }
 .logo{
-    position: absolute;
+    position: fixed;
     top: 25px;
     left: 25px;
     z-index: 2;
 }
 .mainUI{
     z-index: 2;
-    position: absolute;
+    position: fixed;
     top: 25px;
     right: 0;
     width: 300px;
@@ -27,7 +31,6 @@
     height: 40px;
     cursor: pointer;
     transition: all 0.5s ease;
-
 }
 .fullScreenExit,.soundOff {
     display: none;
@@ -75,18 +78,18 @@
 }
 
 .navContainer{
-    position: absolute;
+    position: fixed;
     right: 0px;
     top: 0;
     width: 300px;
     height: 100vh;
-    transform: translateX(300px);
+    /* transform: translateX(300px); */
     z-index: 1;
     background-color: #0e0e0e7c;
     transition: all 0.5s ease;
 }
 .navList{
-    position: absolute;
+    position: fixed;
     display: flex;
     height: 100vh;
     width: 100%;
@@ -106,4 +109,57 @@
 }
 .navSocial li{
     margin: 0;
+}
+
+@media only screen and (max-device-width: 900px){
+    .logo{
+        font-size: medium;
+    }
+    .mainUI{
+        top: 25px;
+        width: 200px;
+    }
+    .hamburger,.fullScreen,.fullScreenExit,.soundOn,.soundOff {
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+    }
+    .fullScreen,.fullScreenExit,.soundOn,.soundOff {
+        margin-top: 5px;
+        padding: 0px;
+    }
+    .navContainer{
+        position: fixed;
+        right: 0px;
+        top: 0;
+        width: 200px;
+        height: 100vh;
+        /* transform: translateX(200px); */
+        z-index: 1;
+        background-color: #0e0e0e7c;
+        transition: all 0.5s ease;
+    }
+    .navList{
+        position: fixed;
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        list-style: none;
+    }
+    .navList li{
+        margin: 50px 0;
+    }
+    .navSocial{
+        display: flex;
+        list-style: none;
+        margin: 0 20px;
+        justify-content: space-around;
+    }
+    .navSocial li{
+        margin: 0;
+    }
+
 }

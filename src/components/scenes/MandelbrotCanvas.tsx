@@ -151,7 +151,7 @@ export default function MyCanvas() {
                 camera={{ fov: 60, position: [0, 0, 20] }}
                 style={{
                     zIndex: 0,
-                    position: "absolute",
+                    position: "fixed",
                     top: 0,
                 }}
                 gl={{
