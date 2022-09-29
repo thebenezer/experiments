@@ -1,27 +1,61 @@
 .header {
     position: absolute;
-    z-index: 10;
+    display: flex;
+    z-index: 2;
+    width: 100%;
 }
-
-.hamburger {
-    z-index: 4;
-    /* margin: auto 0px auto 20px; */
-    position: fixed;
+.logo{
+    position: absolute;
     top: 25px;
-    left: 30px;
-    cursor: pointer;
+    left: 25px;
+    z-index: 2;
 }
+.mainUI{
+    z-index: 2;
+    position: absolute;
+    top: 25px;
+    right: 0;
+    width: 300px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row-reverse;
+}
+.hamburger,.fullScreen,.fullScreenExit,.soundOn,.soundOff {
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.5s ease;
 
+}
+.fullScreenExit,.soundOff {
+    display: none;
+}
+.fullScreen:hover,.fullScreenExit:hover,.soundOff:hover,.soundOn:hover{
+    transform: scale(1.2);
+}
 .line1,
 .line2,
-.line3 {
+.line3,
+.line4 {
     display: block;
     content: "";
-    width: 30px;
+    width: 40%;
     height: 2px;
     background-color: rgb(240, 240, 240);
     margin: 5px 0 5px 0;
     transition: all 0.5s ease;
+}
+.line3,.line4{
+    margin-left: 20px;
+}
+
+.hamburger:hover>.line1{
+    transform: translateX(2.5px) scale(1.4);
+}
+.hamburger:hover>.line4{
+    transform: translateX(-2.5px) scale(1.4);
 }
 
 .line1.close {
@@ -38,4 +72,38 @@
     background-color: #0e0e0e;
     width: 16px;
     transform: translate(1px, 2px) rotate(45deg);
+}
+
+.navContainer{
+    position: absolute;
+    right: 0px;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    transform: translateX(300px);
+    z-index: 1;
+    background-color: #0e0e0e7c;
+    transition: all 0.5s ease;
+}
+.navList{
+    position: absolute;
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    list-style: none;
+}
+.navList li{
+    margin: 50px 0;
+}
+.navSocial{
+    display: flex;
+    list-style: none;
+    margin: 0 20px;
+    justify-content: space-around;
+}
+.navSocial li{
+    margin: 0;
 }

@@ -7,9 +7,19 @@ uniform sampler2D tex;
 uniform float u_time;
 uniform vec2 u_pos;
 uniform vec2 u_scale;
+uniform float u_angle;
 uniform float u_repeat,u_color;
  
 uniform float u_maxIter;
+
+vec2 rotateArea (vec2 p, vec2 pivot, float angle) {
+	float s = sin(angle);
+	float c = cos(angle);
+	p -= pivot;
+	p = vec2(p.x*c-p.y*s,p.x*s+p.y*c);
+	p += pivot;
+	return p;
+}
 
 vec2 complex_square( vec2 z ) {
 	return vec2(
@@ -20,10 +30,11 @@ vec2 complex_square( vec2 z ) {
 
 void main(){
     
-	vec4 inputTexture = texture2D(tex,vUv);
-	vec2 uv = u_pos+(vUv-0.5)*u_scale*1.5*100.;
+	vec4 inputTexture = texture2D(tex,vUv);	
+	vec2 c = u_pos+(vUv-0.5)*u_scale*4.*100.;
 	
-	vec2 c = uv;
+	c = rotateArea(c,u_pos,u_angle);//used to rotate the area around u_pos
+
 	vec2 z = vec2( 0.0 ),zPrev;
 	
 	float r= 20.0; //escaper Radius
@@ -45,15 +56,16 @@ void main(){
 
 		// iter-=fractionalIter;
 
-		float f = sqrt(iter/u_maxIter);
+		float f = sqrt(iter/u_maxIter);  
 		// vec3 col = mix(vec3(1.-f),inputTexture.rgb,0.5);
 		col= texture2D(tex,vec2(f*u_repeat + u_time * 0.2,u_color));
 
 		float angle = atan(z.x, z.y);//angle of final point from center
 
-		col *= vec4(smoothstep(3.,0. , fractionalIter ));//leaf
+		col *= vec4(smoothstep(3.,0. , fractionalIter ));//leaf with dark base and bright tip
 
 		col *= vec4(1.+sin(angle*2.)*0.2);//lines on leaf
+		// col = vec4(f);
 	
 	}
 

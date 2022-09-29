@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Box, Circle, Cone, meshBounds, OrbitControls, OrbitControlsProps, PerspectiveCamera, Tetrahedron, useTexture } from '@react-three/drei';
-import { Vector2, Mesh, RepeatWrapping, MeshPhongMaterial, ShaderMaterial, Vector3, MirroredRepeatWrapping, ACESFilmicToneMapping, FloatType } from 'three';
+import { Html,Loader,OrbitControls, useProgress, useTexture } from '@react-three/drei';
+import { Vector2, Mesh, RepeatWrapping, Vector3, ACESFilmicToneMapping } from 'three';
 import { Perf } from "r3f-perf";
 import { useEffect, useRef } from 'react';
 import MandelbrotShader from "../shaders/MandelbrotShader";
@@ -17,6 +17,12 @@ function calculateAspectScale(width: number, height: number): Vector2 {
     return scale;
 }
 
+  
+// function Loader() {
+//     const { progress } = useProgress()
+//     return <Html center>{progress} % loaded</Html>
+// }
+
 interface MandelbrotProps {
     MandelbrotPosition: Vector3;
     MandelbrotRotation?: Vector3;
@@ -31,14 +37,15 @@ function MandelbrotPlane({
     const planeRef = useRef<Mesh>(null);
     const { size, mouse } = useThree();
     const keyCodes = new Set();
-
+    const {progress,loaded} = useProgress()
+    
     const mandelShader = {
         uniforms: {
             u_time: { type: 'f', value: 0 },
             u_maxIter: { type: 'f', value: 1 },
             tex: { type: 't', value: texture },
             u_scale: { type: Vector2, value: calculateAspectScale(size.width, size.height) },
-            u_pos: { type: Vector2, value: new Vector2(-0.70, 0.0) },
+            u_pos: { type: Vector2, value: new Vector2(-0.0, 0.0) },
 
             u_repeat: { type: 'f', value: 5 },
             u_color: { type: 'f', value: 0.15 },
@@ -183,9 +190,11 @@ export default function MyCanvas() {
                 <Perf
                     trackCPU={false}
                     className={"perfContainer"}
-                    position={"bottom-right"}
+                    position={"bottom-left"}
                 />
             </Canvas>
+            <Loader/>
+
         </>
     );
 }

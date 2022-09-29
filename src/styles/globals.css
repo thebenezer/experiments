@@ -16,6 +16,7 @@ body {
     height: 100%;
     letter-spacing: 0px;
     /* line */
+    overflow: hidden;
 }
 
 a {
