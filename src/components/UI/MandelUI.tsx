@@ -22,14 +22,12 @@ const MandelUI = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     
     const toggleMenu = () => {
-
         if(!navContainerRef.current) return;
         if(isMenuOpen){
-            gsap.to(navContainerRef.current, {xPercent: 100, duration: 0.25})
-        }else{
             gsap.to(navContainerRef.current, {xPercent: 0, duration: 0.25})
+        }else{
+            gsap.to(navContainerRef.current, {xPercent: -100, duration: 0.25})
         }
-
         setIsMenuOpen(!isMenuOpen);
     };
 
@@ -56,6 +54,7 @@ const MandelUI = () => {
             }
         }
     };
+
     // Watch for fullscreenchange
     useEffect(() => {
         function onFullscreenChange() {

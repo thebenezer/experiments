@@ -3,8 +3,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import ReactDOM from 'react-dom'
+import WaterfallCanvas from '../components/scenes/WaterfallCanvas'
 
-const Home: NextPage = () => {
+const Waterfall: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -12,16 +13,11 @@ const Home: NextPage = () => {
         <meta name="description" content="Experiments" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <ul>
-          <li><a href="./mandelbrot">mandelbrot</a></li>
-          <li><a href="./waterfall">waterfall</a></li>
-        </ul>
-      </div>
+      <WaterfallCanvas></WaterfallCanvas>
       <footer>
       </footer>
     </div>
   )
 }
 
-export default Home
+export default Waterfall

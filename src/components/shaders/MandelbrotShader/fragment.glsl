@@ -43,7 +43,7 @@ void main(){
 	for ( iter = 0. ; iter < u_maxIter; iter++ ) {
 		zPrev=z;
 		z = c + complex_square( z );
-		if ( dot( z,zPrev ) > r2 ) break;
+		if ( dot( z,z ) > r2 ) break;
 	}
 	vec4 col = vec4(0.,0.,0.,1.0);//center color
 
@@ -65,7 +65,7 @@ void main(){
 		col *= vec4(smoothstep(3.,0. , fractionalIter ));//leaf with dark base and bright tip
 
 		col *= vec4(1.+sin(angle*2.)*0.2);//lines on leaf
-		// col = vec4(f);
+		col = vec4(f);
 	
 	}
 

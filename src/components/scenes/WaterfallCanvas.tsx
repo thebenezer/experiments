@@ -278,7 +278,7 @@ function Mountains({
     )
 }
 
-export default function MyCanvas() {
+export default function WaterfallCanvas() {
 
     //@ts-ignore
     const orbitControlsRef = useRef<OrbitControls>(null)

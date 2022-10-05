@@ -133,7 +133,7 @@ function MandelbrotPlane({
     );
 }
 
-export default function MandelbrotCanvas() {
+export default function MyCanvas() {
 
     //@ts-ignore
     const orbitControlsRef = useRef<OrbitControls>(null);
