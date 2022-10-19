@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from '../../styles/mbrot.module.css';
 import {
-    AiOutlineSetting,
     AiOutlineFullscreen,
     AiOutlineFullscreenExit,
     AiOutlineSound,
     AiFillSound,
-    AiFillGithub,
-    AiFillTwitterCircle,
     AiFillMail,
 } from "react-icons/ai";
 import { FaGithubAlt, FaTwitter } from "react-icons/fa";

@@ -11,6 +11,9 @@
   "dependencies": {
     "@react-three/drei": "^9.30.3",
     "@react-three/fiber": "^8.7.4",
+    "@theatre/core": "^0.5.0",
+    "@theatre/r3f": "^0.5.0",
+    "@theatre/studio": "^0.5.0",
     "glslify-loader": "^2.0.0",
     "gsap": "^3.11.1",
     "leva": "^0.9.31",
