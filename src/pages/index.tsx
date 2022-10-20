@@ -15,7 +15,7 @@ const Home: NextPage = () => {
       <div>
         <ul>
           <li><a href="./mandelbrot">mandelbrot</a></li>
-          <li><a href="./waterfall">waterfall</a></li>
+          <li><a href="./glass">waterfall</a></li>
         </ul>
       </div>
       <footer>
