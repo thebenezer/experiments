@@ -13,35 +13,22 @@ export default function Mountain({
     MountainHeight,
 }:MountainProps){
 
-    const params = {
-        color: 0xffffff,
-        transmission: 1,
-        opacity: 0.5,
-        metalness: 0,
-        roughness: 0.6,
-        ior: 2,
-        thickness: 1.5,
-        specularIntensity: 10,
-        specularColor: new Color(0xff0000),
-        envMapIntensity: 0,
-        exposure: 1
-    };
-    const mountKey = 'mountain'+MountainPosition.z
     return(
         <>
         <mesh position={MountainPosition}>
             <coneGeometry args={[MountainRadius,MountainHeight,,,true]}/>
             <meshPhysicalMaterial 
-                color={params.color}
-                metalness= {params.metalness}
-                roughness= {params.roughness}
-                ior= {params.ior}
-                transmission= {params.transmission} // use material.transmission for glass materials
-                specularIntensity= {params.specularIntensity}
-                specularColor= {params.specularColor}
-                opacity= {params.opacity}
-                side= {DoubleSide}
+                color= {0xffffff}
+                metalness= {0}
+                roughness= {0.6}
+                ior= {2}
+                transmission= {1} // use material.transmission for glass materials
+                specularIntensity= {10}
+                specularColor= {0xff0000}
+                opacity= {0.8}
+                // side= {DoubleSide}
                 transparent= {true}
+                thickness={2.5}
             />
         </mesh>
        </>

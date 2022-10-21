@@ -11,6 +11,7 @@ import Waterfall from '../GlassExtras/Waterfall';
 import Lake from '../GlassExtras/Lake';
 import River from '../GlassExtras/River';
 import MyCamera from '../GlassExtras/MyCamera';
+import Crystal from '../GlassExtras/Crystal';
 
 export default function GlassCanvas() {
     return(
@@ -35,6 +36,7 @@ export default function GlassCanvas() {
                         shadow-camera-top={200}
                         shadow-camera-bottom={-200}
                     />
+                    <Crystal></Crystal>
                     <River theRiverPosition={new Vector3(0,0,0)}></River>
                     <Waterfall></Waterfall>
                     <Lake></Lake>

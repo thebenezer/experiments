@@ -1,8 +1,8 @@
-import { useTexture } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { getProject } from "@theatre/core";
-import { useRef } from "react";
-import { Mesh, RepeatWrapping, Vector3 } from "three";
+import { Suspense, useEffect, useRef } from "react";
+import { BackSide, DoubleSide, Mesh, RepeatWrapping, ShaderMaterial, Vector3 } from "three";
 import { editable as e,SheetProvider } from '@theatre/r3f'
 
 const demoSheet = getProject('GlassProject').sheet('Glass')
@@ -90,8 +90,70 @@ function RiverInstance({
 }
 
 export default function River({theRiverPosition=new Vector3(0,0,0)}){
+    const model = useGLTF("./models/river3.glb");
+    const texture = useTexture("./peter-burroughs-tilingwater.jpg");
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    const planeRef = useRef<Mesh>(null);
+    useEffect(()=>{
+        model.scene.scale.setScalar(2)
+        model.scene.position.setY(9)
+        model.scene.position.setZ(55)
+        model.scene.traverse((object)=>{
+            if(object.name === "Plane"){
+                (object as Mesh).frustumCulled = false;
+                (object as Mesh).material = new ShaderMaterial({
+                    uniforms: {
+                        u_time: { value: 0 },
+                        // u_phase: { value: RiverPhase },
+                        // u_amp: { value: RiverAmplitude },
+                        // u_freq: { value: RiverFreq },
+                        // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
+                        tex: { value: texture },
+                      },
+                      vertexShader: `
+                        varying vec2 UV;
+                        uniform float u_time;
+                        // uniform float u_phase;
+                        // uniform float u_amp;
+                        // uniform float u_freq;
+                        void main(){
+                            // waveShape
+                            
+                            // float waveShape = sin(position.y * u_freq + u_phase) * u_amp;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,0.1);
+                            UV=uv;
+                        }
+                      `,
+                      fragmentShader: `
+                        varying vec2 UV;
+                        uniform sampler2D tex;
+                        uniform float u_time;
+                        void main(){
+                            gl_FragColor = texture2D(tex,vec2(UV.x,UV.y*5.+u_time*0.1));
+                            // gl_FragColor = vec4(UV,0.,1.);
+                        }
+                      `,
+                      side:DoubleSide,
+                });;
+            }
+        })
+    },[model]);
+
+    useFrame((state)=>{
+        model.scene.traverse((object)=>{
+            if(object.name === "Plane"){
+                // mat.side=BackSide;
+                (object as Mesh).material.uniforms.u_time.value = state.clock.getElapsedTime();
+            }
+        })
+    })
+
     return(
         <>
+        <Suspense fallback={null}>
+            <primitive object={model.scene}/>
+        </Suspense>
             <RiverInstance RiverPosition={new Vector3(0,theRiverPosition.y,.10)} RiverKey={'R1'}/>
             <RiverInstance RiverPosition={new Vector3(-9.55,0.095,-99.900)} RiverKey={'R2'}/>
             <RiverInstance 

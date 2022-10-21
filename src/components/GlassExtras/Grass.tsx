@@ -1,8 +1,7 @@
-import { Box, useGLTF, useTexture } from "@react-three/drei";
+import { Box, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { SheetProvider } from "@theatre/r3f";
-import { Suspense, useEffect, useRef } from "react";
-import { Mesh, MeshPhongMaterial, MirroredRepeatWrapping, Quaternion, RepeatWrapping, Vector2, Vector3 } from "three";
+import { Suspense, useEffect } from "react";
+import { MeshPhongMaterial, Quaternion } from "three";
 
 export default function Grass(){
     
@@ -22,9 +21,9 @@ export default function Grass(){
 
     return(
         <>
-        <Suspense fallback={null}>
+        {/* <Suspense fallback={null}>
             <primitive object={model.scene}/>
-        </Suspense>
+        </Suspense> */}
         <Box 
             args={[10000,100,1000]} 
             position={[0,-100,550]} 

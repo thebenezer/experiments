@@ -17,7 +17,7 @@ export default function MyCamera(){
 
     useEffect(()=>{
         if(!orbitControlsRef.current) return;
-        orbitControlsRef.current.enabled = false
+        orbitControlsRef.current.enabled = true
     })
 
 
