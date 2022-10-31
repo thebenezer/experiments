@@ -2,7 +2,7 @@ import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { getProject } from "@theatre/core";
 import { Suspense, useEffect, useRef } from "react";
-import { BackSide, DoubleSide, Mesh, RepeatWrapping, ShaderMaterial, Vector3 } from "three";
+import { BackSide, DoubleSide, Group, Mesh, MeshPhongMaterial, RepeatWrapping, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three";
 import { editable as e,SheetProvider } from '@theatre/r3f'
 
 const demoSheet = getProject('GlassProject').sheet('Glass')
@@ -90,144 +90,107 @@ function RiverInstance({
 }
 
 export default function River({theRiverPosition=new Vector3(0,0,0)}){
-    const model = useGLTF("./models/river3.glb");
+
+    const riverRef = useRef<Group>(null)
+    const model = useGLTF("./models/river.glb");
     const texture = useTexture("./peter-burroughs-tilingwater.jpg");
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
-    const planeRef = useRef<Mesh>(null);
+    const riverMat = new ShaderMaterial({
+        uniforms: UniformsUtils.merge( [
+            UniformsLib[ 'fog'],{u_time:{value:0},tex:{value:texture}}
+            ]),
+          vertexShader: `
+            varying vec2 UV;
+            uniform float u_time;
+
+            #include <fog_pars_vertex>
+            void main(){
+                #include <begin_vertex>
+                #include <project_vertex>
+                #include <fog_vertex>
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+                UV=uv;
+            }
+          `,
+          fragmentShader: `
+            #include <fog_pars_fragment>
+            varying vec2 UV;
+            uniform sampler2D tex;
+            uniform float u_time;
+            void main(){
+                
+
+                float waterfallFoamPos = 0.001;
+
+                vec4 inputTexture = texture2D(tex,vec2(UV.x,UV.y*5.+u_time*0.1));
+
+                float amplitude = 0.009;
+                float frequency = 30.;
+                float y = sin(UV.x * frequency);
+                float t = 1.;
+                // y += sin(UV.x*frequency*1.72 + t*1.121)*4.0;
+                y += sin(UV.x*frequency*2.221 + t*0.437)*4.0*sin(u_time*2.);
+                y += sin(UV.x*frequency*3.+ t*20.+u_time*5.)*2.5;
+                y *= amplitude*0.06;
+
+                vec3 waterfallFoam = mix(
+                    vec3(1.,1.,1.),
+                    inputTexture.rgb,
+                    step(
+                        UV.y+y ,
+                        0.13+waterfallFoamPos
+                        )
+                    );
+
+                vec3 riverBeforeFall = mix(waterfallFoam,inputTexture.rgb,
+                    step(
+                        0.135+ waterfallFoamPos,
+                        UV.y+y 
+                        )
+                    );
+
+                vec3 bottomFoam = mix(
+                    riverBeforeFall,
+                    vec3(1.,1.,1.),
+                    step(
+                        UV.y+y,
+                        0.085
+                        )
+                    );
+
+
+                gl_FragColor = vec4(bottomFoam,1.);
+
+
+                #include <fog_fragment>
+            }
+          `,
+          side:DoubleSide,
+          fog:true
+    });
+
     useEffect(()=>{
-        model.scene.scale.setScalar(2)
-        model.scene.position.setY(9)
-        model.scene.position.setZ(55)
+        model.scene.scale.set(15,15,25)
+        model.scene.position.setY(0)
+        model.scene.position.setZ(50.5)
         model.scene.traverse((object)=>{
-            if(object.name === "Plane"){
+            if(object.name == "TheRiver"){
                 (object as Mesh).frustumCulled = false;
-                (object as Mesh).material = new ShaderMaterial({
-                    uniforms: {
-                        u_time: { value: 0 },
-                        // u_phase: { value: RiverPhase },
-                        // u_amp: { value: RiverAmplitude },
-                        // u_freq: { value: RiverFreq },
-                        // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
-                        tex: { value: texture },
-                      },
-                      vertexShader: `
-                        varying vec2 UV;
-                        uniform float u_time;
-                        // uniform float u_phase;
-                        // uniform float u_amp;
-                        // uniform float u_freq;
-                        void main(){
-                            // waveShape
-                            
-                            // float waveShape = sin(position.y * u_freq + u_phase) * u_amp;
-                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,0.1);
-                            UV=uv;
-                        }
-                      `,
-                      fragmentShader: `
-                        varying vec2 UV;
-                        uniform sampler2D tex;
-                        uniform float u_time;
-                        void main(){
-                            gl_FragColor = texture2D(tex,vec2(UV.x,UV.y*5.+u_time*0.1));
-                            // gl_FragColor = vec4(UV,0.,1.);
-                        }
-                      `,
-                      side:DoubleSide,
-                });;
+                (object as Mesh).material =riverMat;
             }
         })
     },[model]);
 
     useFrame((state)=>{
-        model.scene.traverse((object)=>{
-            if(object.name === "Plane"){
-                // mat.side=BackSide;
-                (object as Mesh).material.uniforms.u_time.value = state.clock.getElapsedTime();
-            }
-        })
+        riverMat.uniforms.u_time.value = state.clock.getElapsedTime();
     })
 
     return(
         <>
-        <Suspense fallback={null}>
-            <primitive object={model.scene}/>
-        </Suspense>
-            <RiverInstance RiverPosition={new Vector3(0,theRiverPosition.y,.10)} RiverKey={'R1'}/>
-            <RiverInstance RiverPosition={new Vector3(-9.55,0.095,-99.900)} RiverKey={'R2'}/>
-            <RiverInstance 
-                RiverAmplitude={2} 
-                RiverFreq={0.5} 
-                RiverPhase={Math.PI*2} 
-                RiverPosition={new Vector3(27.759999999999753,theRiverPosition.y,-171.92999999999867)}
-                RiverRotation={new Vector3(-Math.PI/2,0,-0.77)}
-                RiverThickness={1.4}
-                RiverKey={'R3'}
-            />
-            <RiverInstance 
-                // RiverAmplitude={3} 
-                // RiverFreq={0.5} 
-                RiverPhase={Math.PI*0.7} 
-                RiverPosition={new Vector3(103.40999999999977,theRiverPosition.y,-237.2700000000003)}
-                RiverRotation={new Vector3(-Math.PI/2,0,-0.6700000000000002)}
-                RiverThickness={1.4}
-                RiverKey={'R4'}
-            />
-            <RiverInstance 
-                RiverAmplitude={3.5} 
-                RiverFreq={0.4} 
-                RiverPhase={Math.PI*0.55} 
-                RiverPosition={new Vector3(143.73000000000104,theRiverPosition.y,-319.65999999999696)}
-                RiverRotation={new Vector3(-Math.PI/2,0,-0.05000000000000385)}
-                RiverThickness={2.25}
-                RiverKey={'R5'}
-            />
-            <RiverInstance 
-                RiverAmplitude={3} 
-                RiverFreq={0.5} 
-                RiverPhase={Math.PI*2.1} 
-                RiverPosition={new Vector3(143.5300000000005,theRiverPosition.y,-422.12999999999784)}
-                RiverRotation={new Vector3(-Math.PI/2,0,0.20000000000000007)}
-                RiverThickness={1.8}
-                RiverKey={'R6'}
-            />
-            <RiverInstance 
-                RiverAmplitude={1} 
-                RiverFreq={0.9} 
-                RiverPhase={Math.PI*-0.1} 
-                RiverPosition={new Vector3(100.09000000000044,theRiverPosition.y,-476.79000000000207)}
-                RiverRotation={new Vector3(-Math.PI/2,0,1.2200000000000015)}
-                RiverThickness={1.2}
-                RiverKey={'R7'}
-            />
-            <RiverInstance 
-                RiverAmplitude={2} 
-                RiverFreq={0.5} 
-                RiverPhase={Math.PI*0.2} 
-                RiverPosition={new Vector3(7.929999999999916,theRiverPosition.y,-518.0899999999933)}
-                RiverRotation={new Vector3(-Math.PI/2,0,1.2900000000000007)}
-                RiverThickness={1.15}
-                RiverKey={'R8'}
-            />
-            <RiverInstance 
-                RiverAmplitude={4} 
-                RiverFreq={0.3} 
-                RiverPhase={Math.PI*-0.3} 
-                RiverPosition={new Vector3(-83.33000000000008,theRiverPosition.y,-567.4799999999912)}
-                RiverRotation={new Vector3(-Math.PI/2,0,1.3700000000000008)}
-                RiverThickness={1.15}
-                RiverKey={'R9'}
-            />
-            <RiverInstance 
-                RiverAmplitude={1} 
-                RiverFreq={0.6} 
-                RiverPhase={Math.PI*0.9} 
-                RiverPosition={new Vector3(-171.73000000000002,theRiverPosition.y,-618.9599999999944)}
-                RiverRotation={new Vector3(-Math.PI/2,0,1.1400000000000006)}
-                RiverThickness={0.95}
-                RiverKey={'R10'}
-            />
+            <Suspense fallback={null}>
+                <primitive ref={riverRef} object={model.scene}/>
+            </Suspense>
         </>
     )
 }

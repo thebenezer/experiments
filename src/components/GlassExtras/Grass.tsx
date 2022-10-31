@@ -5,13 +5,7 @@ import { MeshPhongMaterial, Quaternion } from "three";
 
 export default function Grass(){
     
-     const {camera} = useThree()
-     const cameraQuat=new Quaternion()
 
-    useFrame(()=>{
-        camera.getWorldQuaternion(cameraQuat)
-        camera.setRotationFromQuaternion(cameraQuat)
-    })
     const model = useGLTF("./models/river2.glb");
     useEffect(()=>{
         model.scene.scale.setScalar(17)
@@ -21,18 +15,14 @@ export default function Grass(){
 
     return(
         <>
-        {/* <Suspense fallback={null}>
-            <primitive object={model.scene}/>
-        </Suspense> */}
-        <Box 
-            args={[10000,100,1000]} 
-            position={[0,-100,550]} 
-            material={new MeshPhongMaterial({
-                // color:0x00eeaa,
-                // map: grassTexture
-            })} 
-            receiveShadow={true}
-        />
+            <Box 
+                args={[10000,100,1000]} 
+                position={[0,-100,550]} 
+                material={new MeshPhongMaterial({
+                    color : 0xbbffbb
+                })} 
+                receiveShadow={true}
+            />
         </>
     )
 }

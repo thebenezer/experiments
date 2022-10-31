@@ -1,8 +1,6 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei';
 import { Vector3 } from 'three';
 import { Perf } from "r3f-perf";
-import { useEffect, useRef } from 'react';
 
 import Mountain from '../GlassExtras/Mountain';
 import Grass from '../GlassExtras/Grass';
@@ -21,7 +19,7 @@ export default function GlassCanvas() {
             >
                     <MyCamera></MyCamera>
                     <color attach="background" args={[0xfefefe]} />
-                    <fogExp2 attach={"fog"} args={[0xfefefe,0.0022]}></fogExp2>
+                    <fogExp2 attach={"fog"} args={[0xfefefe,0.0042]}></fogExp2>
                     <ambientLight intensity={0.1} />
                     <directionalLight 
                         color={0xffffff}
@@ -36,9 +34,8 @@ export default function GlassCanvas() {
                         shadow-camera-top={200}
                         shadow-camera-bottom={-200}
                     />
-                    <Crystal></Crystal>
+                    {/* <Crystal></Crystal> */}
                     <River theRiverPosition={new Vector3(0,0,0)}></River>
-                    <Waterfall></Waterfall>
                     <Lake></Lake>
                     <Grass></Grass>
                     <Plateau></Plateau>

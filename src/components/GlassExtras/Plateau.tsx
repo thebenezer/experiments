@@ -3,7 +3,7 @@ import { Color, DoubleSide, MeshPhysicalMaterial, MirroredRepeatWrapping } from 
 
 export default function Plateau(){
     const params = {
-        color: 0xffffff,
+        color: 0xbbeeff,
         transmission: 1,
         opacity: 1,
         metalness: 0,

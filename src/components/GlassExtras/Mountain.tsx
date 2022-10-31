@@ -1,4 +1,6 @@
-import { Color, DoubleSide, Vector3 } from "three";
+import { useTexture } from "@react-three/drei";
+import { useLoader } from "@react-three/fiber";
+import { DoubleSide, Vector3 } from "three";
 
 
 interface MountainProps {
@@ -12,23 +14,26 @@ export default function Mountain({
     MountainRadius,
     MountainHeight,
 }:MountainProps){
+    const texture = useTexture("./textures/studio_small_05_1k.jpg");
 
     return(
         <>
         <mesh position={MountainPosition}>
             <coneGeometry args={[MountainRadius,MountainHeight,,,true]}/>
             <meshPhysicalMaterial 
-                color= {0xffffff}
-                metalness= {0}
-                roughness= {0.6}
+                color= {0xbbffff}
+                envMap = {texture}
+                envMapIntensity={1}
+                metalness= {0.00}
+                roughness= {0.20}
                 ior= {2}
                 transmission= {1} // use material.transmission for glass materials
-                specularIntensity= {10}
-                specularColor= {0xff0000}
+                // specularIntensity= {10}
+                // specularColor= {0xff0000}
                 opacity= {0.8}
-                // side= {DoubleSide}
+                side= {DoubleSide}
                 transparent= {true}
-                thickness={2.5}
+                thickness={10.5}
             />
         </mesh>
        </>

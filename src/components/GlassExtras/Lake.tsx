@@ -1,7 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { Mesh, RepeatWrapping, Vector2 } from "three";
+import { Mesh, RepeatWrapping, UniformsLib, UniformsUtils, Vector2 } from "three";
 
 export default function Lake(){
     const texture = useTexture("./peter-burroughs-tilingwater.jpg");
@@ -11,23 +11,32 @@ export default function Lake(){
     const planeRef = useRef<Mesh>(null);
    
     const flowingWaterShader ={
-        uniforms: {
-            u_time: { type:'f', value: 0 },
-            // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
-            tex: { type:'t', value: texture },
-            iResolution:{ type:'v', value: new Vector2(100,100)}
-          },
+        uniforms: UniformsUtils.merge( [
+            UniformsLib[ 'fog'],{
+                u_time: { type:'f', value: 0 },
+                // iResolution: { type: Vector2, value: new Vector2(size.width, size.height) },
+                tex: { type:'t', value: texture },
+                iResolution:{ type:'v', value: new Vector2(100,100)}
+              }
+            ]),
           vertexShader: `
+            #include <fog_pars_vertex>
+
             varying vec2 vUv;
             uniform float u_time;
             void main(){
-                // Elevation
-                // float elevation = sin(position.y * 1.) * 0.5;
+                #include <begin_vertex>
+                #include <project_vertex>
+                #include <fog_vertex>
+
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position,0.1);
                 vUv=uv;
             }
           `,
           fragmentShader: `
+
+            #include <fog_pars_fragment>
+
             uniform sampler2D tex;
             uniform float u_time;
             uniform vec2 iResolution;
@@ -58,8 +67,11 @@ export default function Lake(){
 
                 gl_FragColor = texture2D(tex,newTexCoord+u_time*0.01)+colorToAdd;
                 // gl_FragColor = vec4(UV,0.,1.);
+
+                #include <fog_fragment>
+
             }
-          `
+          `,
     }
 
 
@@ -73,7 +85,7 @@ export default function Lake(){
         <>
         <mesh ref={planeRef} position={[0,-49.05,120]} rotation={[-Math.PI/2,0,0]} frustumCulled={false}>
             <circleGeometry args={[8,30]}/>
-            <shaderMaterial attach="material" args={[flowingWaterShader]}/>
+            <shaderMaterial attach="material" args={[flowingWaterShader]} fog={true}/>
         </mesh>
         </>
     )
