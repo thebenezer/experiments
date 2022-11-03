@@ -36,6 +36,7 @@ export default function MyCamera(){
             // theatreInit = true
             studio.initialize();
             studio.extend(extension);
+            studio.ui.hide()
             setTheatreInit(true);
         }
     }, [theatreInit])

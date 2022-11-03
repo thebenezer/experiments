@@ -178,7 +178,7 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
         metalness: 0.00,
         roughness: 0.50,
         ior: 2,
-        // envMap: reflectionEnv,
+        envMap: reflectionEnv,
         // envMapIntensity:1,
         // reflectivity:0.20,
         transmission: 1, // use material.transmission for glass materials
@@ -196,7 +196,7 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
         roughness: 0.50,
         ior: 2,
         // reflectivity:0.20,
-        transmission: 0, // use material.transmission for glass materials
+        transmission: 1, // use material.transmission for glass materials
         specularIntensity: 2,
         specularColor: new Color(0xff0000),
         opacity: 1,
