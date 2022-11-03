@@ -37,9 +37,9 @@ export default function GlassCanvas() {
                     {/* <Crystal></Crystal> */}
                     <River theRiverPosition={new Vector3(0,0,0)}></River>
                     <Lake></Lake>
-                    <Grass></Grass>
-                    <Plateau></Plateau>
-                    <Mountain MountainPosition={new Vector3(60,35,-85)} MountainRadius={60} MountainHeight={80}></Mountain>
+                    {/* <Grass></Grass> */}
+                    {/* <Plateau></Plateau> */}
+                    {/* <Mountain MountainPosition={new Vector3(60,35,-85)} MountainRadius={60} MountainHeight={80}></Mountain>
                     <Mountain MountainPosition={new Vector3(30,10,0)} MountainRadius={20} MountainHeight={30}></Mountain>
                     <Mountain MountainPosition={new Vector3(-60,10,-85)} MountainRadius={60} MountainHeight={80}></Mountain>
                     <Mountain MountainPosition={new Vector3(-50,15,-10)} MountainRadius={60} MountainHeight={80}></Mountain>
@@ -52,7 +52,7 @@ export default function GlassCanvas() {
                     <Mountain MountainPosition={new Vector3(200,35,-300)} MountainRadius={60} MountainHeight={80}></Mountain>
                     <Mountain MountainPosition={new Vector3(-150,35,-250)} MountainRadius={60} MountainHeight={90}></Mountain>
                     <Mountain MountainPosition={new Vector3(-150,5,-100)} MountainRadius={60} MountainHeight={80}></Mountain>
-                    <Mountain MountainPosition={new Vector3(150,35,-50)} MountainRadius={60} MountainHeight={80}></Mountain>
+                    <Mountain MountainPosition={new Vector3(150,35,-50)} MountainRadius={60} MountainHeight={80}></Mountain> */}
                 <Perf
                 position='bottom-left'></Perf>
             </Canvas>
