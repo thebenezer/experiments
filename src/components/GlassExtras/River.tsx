@@ -7,16 +7,22 @@ import { editable as e,SheetProvider } from '@theatre/r3f'
 import WaterfallShader from "../shaders/WaterfallShader";
 import LakeShader from "../shaders/LakeShader";
 
-function Loader() {
-  const { progress } = useProgress()
-  console.log(progress)
-  return <Html center>{progress} % loaded</Html>
-}
+// function Loader() {
+//   const { progress } = useProgress()
+//   console.log(progress)
+//   return <Html center>{progress} % blej</Html>
+// }
 
 const demoSheet = getProject('GlassProject').sheet('Glass')
 
 
 export default function River({theRiverPosition=new Vector3(0,0,0)}){
+
+    const {  progress, item, loaded, total } = useProgress()
+
+    useEffect(()=>{
+        console.log( progress, item, loaded, total)
+    },[ progress, item, loaded, total])
 
     const riverRef = useRef<Group>(null)
     const model = useGLTF("./models/glass1.glb");
@@ -116,10 +122,12 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
 
     return(
         <>
-            <Suspense fallback={<Loader/>}>
+            <Suspense fallback={null}>
                 <primitive ref={riverRef} object={model.scene}/>
             </Suspense>
         </>
     )
 }
-useGLTF.preload('./models/glass1.glb')
+useGLTF.preload('./models/glass1.glb');
+useTexture.preload('./textures/studio_small_05_1k.jpg')
+useTexture.preload('./peter-burroughs-tilingwater.jpg')
