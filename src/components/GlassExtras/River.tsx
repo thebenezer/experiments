@@ -7,26 +7,37 @@ import { editable as e,SheetProvider } from '@theatre/r3f'
 import WaterfallShader from "../shaders/WaterfallShader";
 import LakeShader from "../shaders/LakeShader";
 
-// function Loader() {
-//   const { progress } = useProgress()
-//   console.log(progress)
-//   return <Html center>{progress} % blej</Html>
-// }
 
 const demoSheet = getProject('GlassProject').sheet('Glass')
 
 
 export default function River({theRiverPosition=new Vector3(0,0,0)}){
 
-    const {  progress, item, loaded, total } = useProgress()
+    // const {  progress, item, loaded, total } = useProgress()
 
-    useEffect(()=>{
-        console.log( progress, item, loaded, total)
-    },[ progress, item, loaded, total])
+    // useEffect(()=>{
+    //     console.log( progress, item, loaded, total)
+    // },[ item])
 
     const riverRef = useRef<Group>(null)
     const model = useGLTF("./models/glass1.glb");
-    const texture = useTexture("./peter-burroughs-tilingwater.jpg");
+    const texture = useTexture("./textures/peter-burroughs-tilingwater.jpg");
+    const texture2 = useTexture("./textures/Baked.jpeg");
+    const tempMat = new MeshPhysicalMaterial({
+        color: 0xbbffff,
+        metalness: 0.00,
+        roughness: 0.50,
+        ior: 2,
+        envMap: texture2,
+        // envMapIntensity:1,
+        // reflectivity:0.20,
+        transmission: 1, // use material.transmission for glass materials
+        // specularIntensity: 10,
+        // specularColor: new Color(0xff0000),
+        opacity: 0.8,
+        side: DoubleSide,
+        transparent: true,
+    })
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
     const riverMat = new ShaderMaterial({
@@ -121,13 +132,11 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
     })
 
     return(
-        <>
-            <Suspense fallback={null}>
-                <primitive ref={riverRef} object={model.scene}/>
-            </Suspense>
-        </>
+        <Suspense fallback={null}>
+            <primitive ref={riverRef} object={model.scene}/>
+        </Suspense>
     )
 }
 useGLTF.preload('./models/glass1.glb');
 useTexture.preload('./textures/studio_small_05_1k.jpg')
-useTexture.preload('./peter-burroughs-tilingwater.jpg')
+useTexture.preload('./textures/peter-burroughs-tilingwater.jpg')

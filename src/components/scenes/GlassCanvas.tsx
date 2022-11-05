@@ -53,7 +53,7 @@ export default function GlassCanvas() {
                 <Perf
                 position='bottom-left'></Perf>
             </Canvas>
-            {/* <Loader/> */}
+            <Loader/>
         </>
     )
 }
