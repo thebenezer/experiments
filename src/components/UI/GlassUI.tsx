@@ -33,25 +33,6 @@ const MandelUI = () => {
         setIsSoundOn(!isSoundOn);
     };
 
-    const toggleFullScreen = () => {
-        const elem = document.documentElement;
-        if (!isFullscreen) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            }
-            // @ts-ignore
-            else if (elem.webkitRequestFullscreen) {
-                /* Safari */
-                // @ts-ignore
-                elem.webkitRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
-    };
-
     // Watch for fullscreenchange
     useEffect(() => {
         function onFullscreenChange() {
@@ -65,19 +46,13 @@ const MandelUI = () => {
     return (
         <>
             <h1 className={styles.logo}>Glass</h1>
-            <div className={styles.mainUI}>
-                <div className={styles.hamburger} onClick={toggleMenu}>
-                    <span className={styles.line1}></span>
-                    <span className={styles.line2}></span>
-                    <span className={styles.line3}></span>
-                    <span className={styles.line4}></span>
-                </div>
-                <IconContext.Provider value={{ className: styles.fullScreen, style: { display: isFullscreen ? "none" : "block" }}}>
-                    <AiOutlineFullscreen onClick={toggleFullScreen} />
-                </IconContext.Provider>
-                <IconContext.Provider value={{ className: styles.fullScreenExit, style: { display: isFullscreen ? "block" : "none" }}}>
-                    <AiOutlineFullscreenExit onClick={toggleFullScreen} />
-                </IconContext.Provider>
+            <div className={styles.hamburger} onClick={toggleMenu}>
+                <span className={styles.line1}></span>
+                <span className={styles.line2}></span>
+                <span className={styles.line3}></span>
+                <span className={styles.line4}></span>
+            </div>
+            <div className={styles.soundToggle}>
                 <IconContext.Provider value={{ className: styles.soundOn, style: { display: isSoundOn ? "none" : "block" }}}>
                     <AiOutlineSound onClick={toggleSound} />
                 </IconContext.Provider>

@@ -34,7 +34,15 @@ export default function GlassCanvas() {
                     shadow-camera-right={200}
                     shadow-camera-top={200}
                     shadow-camera-bottom={-200}
+                    // intensity={0.5}
                 />
+                {/* <pointLight
+                    color={0xffffff}
+                    position={[0,90,30]}
+                    distance={90}
+                    intensity={10}
+                >
+                </pointLight> */}
                 <River theRiverPosition={new Vector3(0,0,0)}></River>
                 {/* <Mountain MountainPosition={new Vector3(60,35,-85)} MountainRadius={60} MountainHeight={80}></Mountain>
                 <Mountain MountainPosition={new Vector3(30,10,0)} MountainRadius={20} MountainHeight={30}></Mountain>
@@ -50,8 +58,8 @@ export default function GlassCanvas() {
                 <Mountain MountainPosition={new Vector3(-150,35,-250)} MountainRadius={60} MountainHeight={90}></Mountain>
                 <Mountain MountainPosition={new Vector3(-150,5,-100)} MountainRadius={60} MountainHeight={80}></Mountain>
                 <Mountain MountainPosition={new Vector3(150,35,-50)} MountainRadius={60} MountainHeight={80}></Mountain> */}
-                <Perf
-                position='bottom-left'></Perf>
+                {/* <Perf
+                position='bottom-left'></Perf> */}
             </Canvas>
             <Loader/>
         </>

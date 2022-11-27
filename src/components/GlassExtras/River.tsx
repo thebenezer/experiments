@@ -6,7 +6,7 @@ import { Color, DoubleSide, Group, Mesh, MeshPhongMaterial, MeshPhysicalMaterial
 import { editable as e,SheetProvider } from '@theatre/r3f'
 import WaterfallShader from "../shaders/WaterfallShader";
 import LakeShader from "../shaders/LakeShader";
-
+import { Console } from "console";
 
 const demoSheet = getProject('GlassProject').sheet('Glass')
 
@@ -22,22 +22,6 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
     const riverRef = useRef<Group>(null)
     const model = useGLTF("./models/glass1.glb");
     const texture = useTexture("./textures/peter-burroughs-tilingwater.jpg");
-    const texture2 = useTexture("./textures/Baked.jpeg");
-    const tempMat = new MeshPhysicalMaterial({
-        color: 0xbbffff,
-        metalness: 0.00,
-        roughness: 0.50,
-        ior: 2,
-        envMap: texture2,
-        // envMapIntensity:1,
-        // reflectivity:0.20,
-        transmission: 1, // use material.transmission for glass materials
-        // specularIntensity: 10,
-        // specularColor: new Color(0xff0000),
-        opacity: 0.8,
-        side: DoubleSide,
-        transparent: true,
-    })
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
     const riverMat = new ShaderMaterial({
@@ -103,6 +87,31 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
         transparent: false,
     })
 
+    const crystalMat = new MeshPhysicalMaterial({
+        // color: 0xaa77aa,
+        color: 0xFFAAaa,
+        metalness: 0.00,
+        roughness: 0.00,
+        ior: 2.2,
+        // envMap: reflectionEnv,
+        // envMapIntensity:1,
+        reflectivity:2,
+        transmission: 2, // use material.transmission for glass materials
+        specularIntensity: 1,
+        specularColor: new Color(0x000000),
+        opacity: 0.8,
+        side: DoubleSide,
+        transparent: true,
+    })
+    crystalMat.thickness = 2.5;
+    const glowMat = new MeshPhongMaterial({
+        color: 0xffffff,
+        // emissive: 0xffffff,
+        opacity: 0,
+        side: DoubleSide,
+        transparent: false,
+    })
+    
     useEffect(()=>{
         model.scene.scale.set(15,15,15)
         model.scene.position.setY(0)
@@ -120,6 +129,12 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
             }else if(object.name.includes("Lake")){
                 (object as Mesh).frustumCulled = true;
                 (object as Mesh).material =lakeMat;
+            }else if(object.name == "Crystal"){
+                (object as Mesh).frustumCulled = true;
+                (object as Mesh).material =crystalMat;
+            }else if(object.name == "CrystalOutline"){
+                (object as Mesh).frustumCulled = true;
+                (object as Mesh).material =glowMat;
             }else if(object.name == "TheRiver"){
                 (object as Mesh).frustumCulled = false;
                 (object as Mesh).material =riverMat;
