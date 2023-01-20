@@ -12,7 +12,7 @@ import { IconContext } from "react-icons";
 import gsap from "gsap";
 
 
-const MandelUI = () => {
+const GlassUI = () => {
     const navContainerRef = useRef<HTMLElement>(null)
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSoundOn, setIsSoundOn] = useState(false);
@@ -94,4 +94,4 @@ const MandelUI = () => {
     );
 };
 
-export default MandelUI;
+export default GlassUI;

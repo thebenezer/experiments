@@ -6,7 +6,9 @@ import extension from '@theatre/r3f/dist/extension';
 import { getProject, types } from "@theatre/core";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Quaternion } from "three";
+import { useScroll } from "@react-three/drei";
 
+// gsap.registerPlugin(ScrollTrigger);
 
 // our Theatre.js project sheet
 const mainSheet = getProject('GlassProject').sheet('Glass');
@@ -16,10 +18,17 @@ const EditableCamera = e(PerspectiveCamera, 'perspectiveCamera');
 export default function MyCamera() {
     //@ts-ignore
     const orbitControlsRef = useRef<OrbitControls>(null);
+    const scroll = useScroll();
+
+    useFrame(()=>{
+        // console.log(scroll.offset)
+        mainSheet.sequence.position = scroll.offset * 15
+        // console.log(mainSheet.sequence.pointer.length)
+    })
 
     useEffect(() => {
         if (!orbitControlsRef.current) return;
-        orbitControlsRef.current.enabled = true;
+        orbitControlsRef.current.enabled = false;
     });
 
     const { camera } = useThree();
@@ -35,6 +44,8 @@ export default function MyCamera() {
             studio.extend(extension);
             studio.ui.hide();
             setTheatreInit(true);
+            console.log(mainSheet,studio)
+
         }
     }, [theatreInit]);
 
@@ -68,6 +79,8 @@ export default function MyCamera() {
     }, [Theatre_orbitCont]);
 
     useFrame(() => {
+        // console.log(scroll.offset)
+
         if (orbitControlsRef.current && !orbitControlsRef.current.enabled) {
             camera.getWorldQuaternion(cameraQuat);
             camera.setRotationFromQuaternion(cameraQuat);

@@ -6,6 +6,7 @@
                               'embedded-opentype', and 'svg' */
   }
 
+
 .logo{
     font-family: ghost_cove,-apple-system,sans-serif;
     font-size: 3.5rem;
@@ -21,6 +22,10 @@
     -moz-background-clip: text;
     background-clip: text;
     /* filter: brightness(2); */
+
+/* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 .soundToggle{
     position: fixed;
