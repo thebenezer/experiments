@@ -1,0 +1,51 @@
+{
+  "sheetsById": {
+    "R3F UI": {
+      "staticOverrides": {
+        "byObject": {
+          "Editor Camera snapshot #1": {
+            "transform": {
+              "position": {
+                "x": 126.87758879712322,
+                "y": 719.1156581853487,
+                "z": 563.4349641562233
+              },
+              "target": {
+                "x": -35.23537625672832,
+                "y": -141.06490522164987,
+                "z": -289.2935414450551
+              }
+            },
+            "lens": {
+              "far": 5000,
+              "fov": 75
+            }
+          },
+          "Editor": {
+            "transformControls": {
+              "space": "world",
+              "mode": "translate"
+            },
+            "viewport": {
+              "shading": "solid",
+              "referenceWindow": "minimized"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitionVersion": "0.4.0",
+  "revisionHistory": [
+    "oG3e0Oivn_i0h5Qt",
+    "aiFXeFqXcDhZQG3o",
+    "ZvPcxNgBzxz1WRmG",
+    "QTvp56iCb0ztWNnR",
+    "IXHLg_OAJlFoyiEL",
+    "BCKGSut67L67R83a",
+    "5hri6rHIJoY4hrSn",
+    "5p9Uhq8bbdhgB3Bb",
+    "8V84pRVvoLTpz0dI",
+    "vKtIptFutGTumEmT"
+  ]
+}

@@ -20,7 +20,7 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
     // },[ item])
 
     const riverRef = useRef<Group>(null)
-    const model = useGLTF("./models/glass1.glb");
+    const model = useGLTF("./models/glass2.glb");
     const texture = useTexture("./textures/peter-burroughs-tilingwater.jpg");
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
@@ -106,7 +106,7 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
     crystalMat.thickness = 2.5;
     const glowMat = new MeshPhongMaterial({
         color: 0xffffff,
-        // emissive: 0xffffff,
+        emissive: 0xffffff,
         opacity: 0,
         side: DoubleSide,
         transparent: false,
@@ -117,7 +117,7 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
         model.scene.position.setY(0)
         model.scene.position.setZ(50.5)
         model.scene.traverse((object)=>{
-            if(object.name.includes("Cone")){
+            if(object.name.includes("Cone") || object.name.includes("Icosphere")){
                 (object as Mesh).frustumCulled = true;
                 (object as Mesh).material =mountainMat;
             }else if(object.name.includes("Plateau")){

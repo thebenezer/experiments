@@ -1,38 +1,43 @@
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { Box, PerspectiveCamera } from "@react-three/drei";
 import { editable as e, SheetProvider } from '@theatre/r3f';
 import studio from "@theatre/studio";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import extension from '@theatre/r3f/dist/extension';
-import { getProject, types } from "@theatre/core";
+import { getProject} from "@theatre/core";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Quaternion } from "three";
+import { Camera, Object3D} from "three";
 import { useScroll } from "@react-three/drei";
 
-// gsap.registerPlugin(ScrollTrigger);
 
-// our Theatre.js project sheet
+// Theatre.js project sheet
 const mainSheet = getProject('GlassProject').sheet('Glass');
 
-const EditableCamera = e(PerspectiveCamera, 'perspectiveCamera');
-
 export default function MyCamera() {
-    //@ts-ignore
-    const orbitControlsRef = useRef<OrbitControls>(null);
+    const groupRef = useRef<Object3D>(null);
+    const camRef = useRef<Camera>(null);
     const scroll = useScroll();
 
-    useFrame(()=>{
-        // console.log(scroll.offset)
-        mainSheet.sequence.position = scroll.offset * 15
-        // console.log(mainSheet.sequence.pointer.length)
+    const {camera,size} = useThree()
+    const [cursor] = useState({x:0,y:0});
+    const target = {x:0,y:0}
+    const range = 0.0004;
+
+    useFrame((state,delta)=>{
+        target.x = ( 1 - cursor.x ) * range;
+        target.y = ( 1 - cursor.y ) * range; 
+        // replace delta with any multiplier to change the lerp speed
+        camera.rotation.x += delta * ( target.y - camera.rotation.x );
+        camera.rotation.y += delta * ( target.x - camera.rotation.y );
     })
 
-    useEffect(() => {
-        if (!orbitControlsRef.current) return;
-        orbitControlsRef.current.enabled = false;
-    });
+    useMemo(()=>{
+        // ON MOUSE MOVE TO GET CAMERA POSITION
+        document.addEventListener('mousemove', (event) => {
+            cursor.x = (event.clientX) - size.width * 0.5;
+            cursor.y = (event.clientY) -size.height * 0.5;
+        }, false)
+    },[size.height, size.width])
 
-    const { camera } = useThree();
-    const cameraQuat = new Quaternion();
 
     //************ INITIALIZE THEATRE.JS ************//
 
@@ -51,59 +56,56 @@ export default function MyCamera() {
 
     const [theatreObjectInit, setTheatreObjectInit] = useState(false);
 
-    let Theatre_orbitCont: any = null;
-    const theatreConfig = {
-        enabled: types.boolean(true),
-        target: {
-            x: types.number(0),
-            y: types.number(0),
-            z: types.number(0),
-        },
-    };
-    useEffect(() => {
-        if (!theatreObjectInit && mainSheet !== null) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            Theatre_orbitCont = mainSheet.object("OrbitControls", theatreConfig);
-            setTheatreObjectInit(true);
-        }
-    }, [theatreObjectInit, mainSheet]);
+    // let Theatre_orbitCont: any = null;
+    // const theatreConfig = {
+    //     enabled: types.boolean(true),
+    //     target: {
+    //         x: types.number(0),
+    //         y: types.number(0),
+    //         z: types.number(0),
+    //     },
+    // };
+    // useEffect(() => {
+    //     if (!theatreObjectInit && mainSheet !== null) {
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //         Theatre_orbitCont = mainSheet.object("OrbitControls", theatreConfig);
+    //         setTheatreObjectInit(true);
+    //     }
+    // }, [theatreObjectInit, mainSheet]);
 
-    useEffect(() => {
-        if (Theatre_orbitCont !== null) {
-            Theatre_orbitCont.onValuesChange((values: any) => {
-                if (orbitControlsRef.current) {
-                    orbitControlsRef.current.enabled = values.enabled;
-                }
-            });
-        }
-    }, [Theatre_orbitCont]);
+    // useEffect(() => {
+    //     if (Theatre_orbitCont !== null) {
+    //         Theatre_orbitCont.onValuesChange((values: any) => {
+    //             if (orbitControlsRef.current) {
+    //                 // orbitControlsRef.current.enabled = values.enabled;
+    //             }
+    //         });
+    //     }
+    // }, [Theatre_orbitCont]);
 
-    useFrame(() => {
+    useFrame(()=>{
         // console.log(scroll.offset)
-
-        if (orbitControlsRef.current && !orbitControlsRef.current.enabled) {
-            camera.getWorldQuaternion(cameraQuat);
-            camera.setRotationFromQuaternion(cameraQuat);
-        }
-    });
+        // mainSheet.sequence.position = scroll.offset * 15
+        // console.log(mainSheet.sequence.pointer.length)
+    })
 
     return (
         <>
             <SheetProvider sheet={mainSheet}>
-                <EditableCamera
-                    theatreKey="NewCamera"
-                    makeDefault
-                    position={[0, 30, 170]}
-                    fov={45}
-                ></EditableCamera>
+                {/* @ts-ignore */}
+                <e.group theatreKey="CamGroup" ref={groupRef} position={[0,0,0]}>
+                    <PerspectiveCamera
+                        ref={camRef}
+                        // theatreKey="NewCamera"
+                        makeDefault
+                        position={[0, 0, 0]}
+                        fov={45}
+                    ></PerspectiveCamera>
+                    <Box position={[0,0,0]}>
+                        <meshBasicMaterial color={0xff0000}></meshBasicMaterial>
+                    </Box>
+                </e.group>
             </SheetProvider>
-            <OrbitControls
-                ref={orbitControlsRef}
-                enableDamping={true}
-                dampingFactor={0.04}
-                enablePan={false}
-                enableZoom={false}
-            />
         </>
     );
 
