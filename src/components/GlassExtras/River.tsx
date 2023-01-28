@@ -1,23 +1,12 @@
-import { useGLTF, useTexture, Html, useProgress } from "@react-three/drei";
+import { useGLTF, useTexture} from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { getProject } from "@theatre/core";
-import { Suspense, useEffect, useRef } from "react";
-import { Color, DoubleSide, Group, Mesh, MeshPhongMaterial, MeshPhysicalMaterial, RepeatWrapping, ShaderMaterial, UniformsLib, UniformsUtils, Vector2, Vector3 } from "three";
-import { editable as e,SheetProvider } from '@theatre/r3f'
+import { Suspense, useEffect, useMemo, useRef } from "react";
+import { BufferGeometry, Color, DoubleSide, Group, Material, Mesh, MeshPhongMaterial, MeshPhysicalMaterial, Object3D, RepeatWrapping, ShaderMaterial, UniformsLib, UniformsUtils, Vector2, Vector3 } from "three";
 import WaterfallShader from "../shaders/WaterfallShader";
 import LakeShader from "../shaders/LakeShader";
-import { Console } from "console";
-
-const demoSheet = getProject('GlassProject').sheet('Glass')
 
 
-export default function River({theRiverPosition=new Vector3(0,0,0)}){
-
-    // const {  progress, item, loaded, total } = useProgress()
-
-    // useEffect(()=>{
-    //     console.log( progress, item, loaded, total)
-    // },[ item])
+export default function River(){
 
     const riverRef = useRef<Group>(null)
     const model = useGLTF("./models/glass2.glb");
@@ -111,8 +100,16 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
         side: DoubleSide,
         transparent: false,
     })
+
+    const crystalMovement={
+        rotation:0,
+        updown:0
+    }
+
+    let crystal: Mesh<BufferGeometry, Material | Material[]>;
+    let crystalOutline: Mesh<BufferGeometry, Material | Material[]>;
     
-    useEffect(()=>{
+    useMemo(()=>{
         model.scene.scale.set(15,15,15)
         model.scene.position.setY(0)
         model.scene.position.setZ(50.5)
@@ -132,18 +129,28 @@ export default function River({theRiverPosition=new Vector3(0,0,0)}){
             }else if(object.name == "Crystal"){
                 (object as Mesh).frustumCulled = true;
                 (object as Mesh).material =crystalMat;
+                crystal = (object as Mesh)
             }else if(object.name == "CrystalOutline"){
                 (object as Mesh).frustumCulled = true;
                 (object as Mesh).material =glowMat;
+                crystalOutline = (object as Mesh)
             }else if(object.name == "TheRiver"){
                 (object as Mesh).frustumCulled = false;
                 (object as Mesh).material =riverMat;
             }
         })
     },[model]);
-    useFrame((state)=>{
-        riverMat.uniforms.u_time.value = state.clock.getElapsedTime();
-        lakeMat.uniforms.u_time.value = state.clock.getElapsedTime();
+    const frequency = 1, amplitude = 0.001, rotSpeed = 0.003;
+    useFrame((state,delta)=>{
+        const elTime = state.clock.getElapsedTime();
+        // Update river shader
+        riverMat.uniforms.u_time.value = elTime;
+        lakeMat.uniforms.u_time.value = elTime;
+        // Rotate crystal
+        crystal.rotation.y+=rotSpeed;
+        crystalOutline.rotation.y+=rotSpeed;
+        crystal.position.y+=Math.sin(elTime*frequency)*amplitude;
+        crystalOutline.position.y+=Math.sin(elTime*frequency)*amplitude;
     })
 
     return(

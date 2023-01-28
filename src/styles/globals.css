@@ -30,6 +30,13 @@ a {
   margin: 0;
 }
 
+.scroll{
+  scroll-snap-type: y proximity;
+}
+
+.scroll::-webkit-scrollbar{
+  display: none;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
