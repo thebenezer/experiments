@@ -6,6 +6,7 @@ import MyCamera from '../GlassExtras/MyCamera';
 import { ScrollControls} from '@react-three/drei';
 import { Suspense } from 'react';
 import Loader from '../GlassExtras/Loader';
+// import { Loader} from '@react-three/drei';
 
 export default function GlassCanvas() {
     
@@ -14,6 +15,7 @@ export default function GlassCanvas() {
             <Canvas 
                 shadows
             >
+                <Loader/>
                 <ScrollControls pages={3} damping={1} eps={0.0000001}>
                     <MyCamera></MyCamera>
                 </ScrollControls>
@@ -34,11 +36,10 @@ export default function GlassCanvas() {
                     shadow-camera-bottom={-200}
                     // intensity={0.5}
                 />
-                <Suspense fallback={<Loader/>}>
+                <Suspense fallback={null}>
                     <River></River>
                 </Suspense>
-                <Perf
-                position='bottom-left'></Perf>
+                {/* <Perf position='bottom-left'></Perf> */}
             </Canvas>
         </>
     )

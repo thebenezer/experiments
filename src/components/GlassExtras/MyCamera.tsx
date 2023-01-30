@@ -1,4 +1,4 @@
-import { Box, PerspectiveCamera } from "@react-three/drei";
+import { Box, PerspectiveCamera, useProgress } from "@react-three/drei";
 import { editable as e, SheetProvider } from '@theatre/r3f';
 import studio from "@theatre/studio";
 import { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
@@ -18,12 +18,12 @@ export default function MyCamera() {
     const scroll = useScroll();
     const mySequence = mainSheet.sequence;
 
+    // Hide scrollbar
     useLayoutEffect(()=>{
-        // scroll.el.firstElementChild?.classList.add("scroll")
-        // scroll.el.classList.add("scroll")
-    },[scroll.el])
-
-
+        scroll.el.firstElementChild?.classList.add("scroll")
+        scroll.el.classList.add("scroll")
+    },[scroll.el]);
+    
     // Move camera based on pointer position
     const {camera,size} = useThree()
     const [cursor] = useState({x:0,y:0});
@@ -75,11 +75,11 @@ export default function MyCamera() {
         if(dir>0 && currentPage<3){
             currentPage+=1
             if(currentPage==1){
-                lr=0,ur=4;
-            } else if(currentPage==2){
                 lr=4,ur=8;
-            } else{
+            } else if(currentPage==2){
                 lr=8,ur=12;
+            } else{
+                lr=12,ur=16;
             }
             mySequence.play({range: [lr, ur]}).then(()=>{
                 scroll.delta=0;
@@ -88,18 +88,18 @@ export default function MyCamera() {
         else if(dir<0 && currentPage>0){
             currentPage-=1
             if(currentPage==0){
-                lr=0,ur=4;
-            } else if(currentPage==1){
                 lr=4,ur=8;
-            } else{
+            } else if(currentPage==1){
                 lr=8,ur=12;
+            } else{
+                lr=12,ur=16;
             }
             scroll.delta=0;
             mySequence.play({range: [lr,ur],direction: "reverse"}).then(()=>{
                 scroll.delta=0;
             });
         }
-        console.log(currentPage)
+        // console.log(currentPage)
     }
     let dir = 0
     let prevScroll = 0;
@@ -122,6 +122,7 @@ export default function MyCamera() {
         }
         if(isSeqPlaying){
             scroll.el.scrollTop=scroll.el.scrollHeight/2
+            scroll.delta=0;
         }
         prevScroll=scroll.offset;
 

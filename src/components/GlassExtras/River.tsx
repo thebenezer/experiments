@@ -44,7 +44,7 @@ export default function River(){
         metalness: 0.00,
         roughness: 0.50,
         ior: 2,
-        envMap: reflectionEnv,
+        // envMap: reflectionEnv,
         // envMapIntensity:1,
         // reflectivity:0.20,
         transmission: 1, // use material.transmission for glass materials
@@ -78,13 +78,13 @@ export default function River(){
 
     const crystalMat = new MeshPhysicalMaterial({
         // color: 0xaa77aa,
-        color: 0xFFAAaa,
+        color: 0xaa1100,
         metalness: 0.00,
         roughness: 0.00,
         ior: 2.2,
-        // envMap: reflectionEnv,
-        // envMapIntensity:1,
-        reflectivity:2,
+        envMap: reflectionEnv,
+        envMapIntensity:1,
+        reflectivity:1,
         transmission: 2, // use material.transmission for glass materials
         specularIntensity: 1,
         specularColor: new Color(0x000000),
@@ -96,9 +96,7 @@ export default function River(){
     const glowMat = new MeshPhongMaterial({
         color: 0xffffff,
         emissive: 0xffffff,
-        opacity: 0,
-        side: DoubleSide,
-        transparent: false,
+        emissiveIntensity:5
     })
 
     const crystalMovement={
