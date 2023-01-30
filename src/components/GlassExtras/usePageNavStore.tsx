@@ -13,5 +13,4 @@ export const usePageNavStore = create<IEnter>( (set) => ({
     page:0,
     updateEnterSite: () => {set({enterSite:true})},
     updatePage: (newPage:number) => {set({page:newPage})}
-
 }));

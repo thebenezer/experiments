@@ -13,11 +13,11 @@ import projectState from "../../../public/waterfallAssets/Waterfall.theatre-proj
 
 // Theatre.js project sheet
 let mainSheet: ISheet;
-if (process.env.NODE_ENV === 'development') {
-    mainSheet = getProject('GlassProject').sheet('Glass');
-}else{
+// if (process.env.NODE_ENV === 'development') {
+//     mainSheet = getProject('GlassProject').sheet('Glass');
+// }else{
     mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
-}
+// }
 
 export default function MyCamera() {
     const groupRef = useRef<Object3D>(null);

@@ -7,7 +7,11 @@ import { gsap } from "gsap";
 import { TextPlugin } from "gsap/dist/TextPlugin";
 import { usePageNavStore } from './usePageNavStore';
 
-const mainSheet = getProject('GlassProject').sheet('Glass');
+import projectState from "../../../public/waterfallAssets/Waterfall.theatre-project-state(2).json"
+
+const mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
+
+// const mainSheet = getProject('GlassProject').sheet('Glass');
 
 export default function Loader() {
     const { progress} = useProgress()
