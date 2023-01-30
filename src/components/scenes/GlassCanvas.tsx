@@ -16,7 +16,7 @@ export default function GlassCanvas() {
                 shadows
             >
                 <Loader/>
-                <ScrollControls pages={3} damping={1} eps={0.0000001}>
+                <ScrollControls pages={3} damping={1} eps={0.0000001} style={{zIndex:1}}>
                     <MyCamera></MyCamera>
                 </ScrollControls>
                 <color attach="background" args={[0xfefefe]} />

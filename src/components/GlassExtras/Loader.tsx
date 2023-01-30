@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { getProject } from '@theatre/core';
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/dist/TextPlugin";
-import { useEnterSiteStore } from './enterSiteHook';
+import { usePageNavStore } from './usePageNavStore';
 
 const mainSheet = getProject('GlassProject').sheet('Glass');
 
@@ -17,7 +17,8 @@ export default function Loader() {
     const buttonRef = useRef<HTMLDivElement>(null);
     const subRef=useRef(null);
 
-    const updateEnterSite = useEnterSiteStore(state => state.updateEnterSite)
+    const updateEnterSite = usePageNavStore(state => state.updateEnterSite)
+    const updatePage = usePageNavStore(state => state.updatePage)
     
     const closeLoader =()=>{
         updateEnterSite();
@@ -39,7 +40,9 @@ export default function Loader() {
 
         // @ts-ignore
         logo.style.transform = "scale(1) translate(0%,0%)";
-        mainSheet.sequence.play({range:[0,4],rate:0.5});
+        mainSheet.sequence.play({range:[0,4],rate:0.5}).then(()=>{
+            updatePage(1);
+        });
     }
 
     useLayoutEffect(()=>{

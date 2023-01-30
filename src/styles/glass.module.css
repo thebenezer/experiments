@@ -27,20 +27,31 @@
 }
 .soundToggle{
     position: fixed;
-    z-index: 1;
-    bottom: 55px;
+    z-index: 3;
+    bottom: 80px;
     left: 105px;
+    cursor: pointer;
 }
 .soundOn,.soundOff {
-    width: 30px;
     color: #313131;
-
+    font-size: 24px;
 }
 .header {
     position: fixed;
     display: flex;
-    z-index: 2;
+    z-index: 1;
+    flex-direction: row;
     width: 100%;
+    text-align: center;
+    height: 100%;
+    padding: 0 20px;
+}
+.header h2{
+    margin: auto;
+    padding-top: 50vh;
+    flex: 1;
+    line-height: 30px;
+    font-size: 18px;
 }
 .hamburger{
     display: none;
@@ -48,7 +59,7 @@
 
 .navContainer{
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     font-family: ghost_cove,-apple-system,sans-serif;
     font-size: 1.4rem;
     color: #313131;
@@ -90,6 +101,10 @@
     .sub{
         top: 200px;
     }
+    .header h2{
+        line-height: 30px;
+        font-size: 16px;
+    }
     .soundToggle{
         position: fixed;
         z-index: 1;
@@ -103,7 +118,7 @@
     .hamburger{
         display: block;
         position: fixed;
-        z-index: 2;
+        z-index: 3;
         top: 25px;
         right: 40px;
         width: 30px;
@@ -159,9 +174,9 @@
         top: 0;
         width: 50%;
         height: 100vh;
-        z-index: 1;
+        z-index: 2;
         transform: translateX(100%);
-        background-color: #0e0e0e7c;
+        background-color: #0e0e0ead;
         transition: all 0.5s ease;
         color: #fefefe;
         font-size: 14px;

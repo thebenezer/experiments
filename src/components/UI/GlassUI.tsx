@@ -1,19 +1,14 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from '../../styles/glass.module.css';
 import {
-    AiOutlineFullscreen,
-    AiOutlineFullscreenExit,
     AiOutlineSound,
     AiFillSound,
     AiFillMail,
 } from "react-icons/ai";
 import { FaGithubAlt, FaTwitter } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import { useProgress } from "@react-three/drei";
 import { gsap } from "gsap";
-import { useEnterSiteStore } from "../GlassExtras/enterSiteHook"; 
-
-
+import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
 const GlassUI = () => {
 
@@ -23,13 +18,41 @@ const GlassUI = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const logoRef=useRef(null);
-    const { progress} = useProgress();
 
-    const enterSite = useEnterSiteStore(state => state.enterSite)
+    const enterSite = usePageNavStore(state => state.enterSite)
+    const page = usePageNavStore(state => state.page);
+    const headerRef=useRef<HTMLHeadingElement>(null);
+    const firstPageRef=useRef<HTMLHeadingElement>(null);
+
+    var t1 = gsap.timeline({repeat: 0});
+    t1.to(firstPageRef.current, {duration: 0.1,text:{value:" "}});
+    t1.to(firstPageRef.current, {duration: 2,delay:0.5,text:{value:"An Experiment to Create A<br>Dynamic River and Waterfall Shader"}});
+    var t2 = gsap.timeline({repeat: 0});
+    t2.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+    t2.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"One Geometry. One Shader."}});
+    var t3 = gsap.timeline({repeat: 0});
+    t3.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+    t3.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Animated Camera with Theatre.js"}});
+    var t4 = gsap.timeline({repeat: 0});
+    t4.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+    t4.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Waterfall Shader with Foam"}});
+    t1.pause();t2.pause();t3.pause();t4.pause();
 
     useEffect(()=>{
-        // console.log("hi",enterSite)
-    },[enterSite])
+        if(!firstPageRef.current) return;
+        gsap.delayedCall(0,()=>{
+            if(page==1){
+                t1.play();
+            }else if(page==2){
+                t2.play()
+            }else if(page==3){
+                t3.play()
+            }else if(page==4){
+                t4.play()
+            }
+        });
+    },[page])
+
     
     const toggleMenu = () => {
         if(!navContainerRef.current) return;
@@ -68,10 +91,10 @@ const GlassUI = () => {
                     <span className={styles.line4}></span>
                 </div>
                 <div className={styles.soundToggle}>
-                    <IconContext.Provider value={{ className: styles.soundOn, style: { display: isSoundOn ? "none" : "block" }}}>
-                        <AiOutlineSound onClick={toggleSound} />
+                    <IconContext.Provider value={{ className: styles.soundOn, style: { display: isSoundOn ? "block" : "none" }}}>
+                        <AiOutlineSound onClick={toggleSound} style={{}}/>
                     </IconContext.Provider>
-                    <IconContext.Provider value={{ className: styles.soundOff, style: { display: isSoundOn ? "block" : "none" } }}>
+                    <IconContext.Provider value={{ className: styles.soundOff, style: { display: isSoundOn ? "none" : "block" } }}>
                         <AiFillSound onClick={toggleSound} />
                     </IconContext.Provider>
                 </div>
@@ -103,8 +126,9 @@ const GlassUI = () => {
                     </ul>
                 </nav>
             </>}
-            <header className={styles.header}>
-
+            <header ref={headerRef} className={styles.header}>
+                {/* <h2 ref={secondPageRef} style={{display:"block"}}></h2> */}
+                <h2 ref={firstPageRef} style={{display:"block"}}>&nbsp;</h2>
             </header>
         </>
     );

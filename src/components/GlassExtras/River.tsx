@@ -37,7 +37,7 @@ export default function River(){
           fog:true
     });
 
-    const reflectionEnv = useTexture("./textures/studio_small_05_1k.jpg");
+    // const reflectionEnv = useTexture("./textures/studio_small_05_1k.jpg");
 
     const mountainMat = new MeshPhysicalMaterial({
         color: 0xbbffff,
@@ -82,8 +82,8 @@ export default function River(){
         metalness: 0.00,
         roughness: 0.00,
         ior: 2.2,
-        envMap: reflectionEnv,
-        envMapIntensity:1,
+        // envMap: reflectionEnv,
+        // envMapIntensity:1,
         reflectivity:1,
         transmission: 2, // use material.transmission for glass materials
         specularIntensity: 1,

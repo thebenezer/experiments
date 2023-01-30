@@ -3,20 +3,29 @@ import { editable as e, SheetProvider } from '@theatre/r3f';
 import studio from "@theatre/studio";
 import { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
 import extension from '@theatre/r3f/dist/extension';
-import { getProject, onChange} from "@theatre/core";
+import { ISheet, getProject, onChange} from "@theatre/core";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Camera, Object3D} from "three";
 import { useScroll } from "@react-three/drei";
+import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
+import projectState from "../../../public/waterfallAssets/Waterfall.theatre-project-state(2).json"
 
 // Theatre.js project sheet
-const mainSheet = getProject('GlassProject').sheet('Glass');
+let mainSheet: ISheet;
+if (process.env.NODE_ENV === 'development') {
+    mainSheet = getProject('GlassProject').sheet('Glass');
+}else{
+    mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
+}
 
 export default function MyCamera() {
     const groupRef = useRef<Object3D>(null);
     const camRef = useRef<Camera>(null);
     const scroll = useScroll();
     const mySequence = mainSheet.sequence;
+
+    const updatePage = usePageNavStore(state => state.updatePage);
 
     // Hide scrollbar
     useLayoutEffect(()=>{
@@ -34,8 +43,8 @@ export default function MyCamera() {
         target.x = ( 1 - cursor.x ) * range;
         target.y = ( 1 - cursor.y ) * range; 
         // replace delta with any multiplier to change the lerp speed
-        // camera.rotation.x += delta * ( target.y - camera.rotation.x );
-        // camera.rotation.y += delta * ( target.x - camera.rotation.y );
+        camera.rotation.x += delta * ( target.y - camera.rotation.x );
+        camera.rotation.y += delta * ( target.x - camera.rotation.y );
     })
 
     useMemo(()=>{
@@ -54,9 +63,10 @@ export default function MyCamera() {
     
     useEffect(() => {
         if (!theatreInit) {
-            // theatreInit = true
-            studio.initialize();
-            studio.extend(extension);
+            if (process.env.NODE_ENV === 'development') {
+                studio.initialize()
+                studio.extend(extension)
+            }
             studio.ui.hide();
             setTheatreInit(true);
               
@@ -81,9 +91,8 @@ export default function MyCamera() {
             } else{
                 lr=12,ur=16;
             }
-            mySequence.play({range: [lr, ur]}).then(()=>{
-                scroll.delta=0;
-            });
+            updatePage(currentPage+1);
+            mySequence.play({range: [lr, ur]});
         }
         else if(dir<0 && currentPage>0){
             currentPage-=1
@@ -95,11 +104,9 @@ export default function MyCamera() {
                 lr=12,ur=16;
             }
             scroll.delta=0;
-            mySequence.play({range: [lr,ur],direction: "reverse"}).then(()=>{
-                scroll.delta=0;
-            });
+            updatePage(currentPage+1);
+            mySequence.play({range: [lr,ur],direction: "reverse"});
         }
-        // console.log(currentPage)
     }
     let dir = 0
     let prevScroll = 0;
