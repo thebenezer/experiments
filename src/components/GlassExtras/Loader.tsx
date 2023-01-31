@@ -7,9 +7,9 @@ import { gsap } from "gsap";
 import { TextPlugin } from "gsap/dist/TextPlugin";
 import { usePageNavStore } from './usePageNavStore';
 
-import projectState from "../../../public/waterfallAssets/Waterfall.theatre-project-state(2).json"
+// import projectState from "../../../public/waterfallAssets/Waterfall.theatre-project-state(2).json"
 
-const mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
+// const mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
 
 // const mainSheet = getProject('GlassProject').sheet('Glass');
 
@@ -20,6 +20,7 @@ export default function Loader() {
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLDivElement>(null);
     const subRef=useRef(null);
+    const {mainSheet} = usePageNavStore();
 
     const updateEnterSite = usePageNavStore(state => state.updateEnterSite)
     const updatePage = usePageNavStore(state => state.updatePage)

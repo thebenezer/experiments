@@ -9,23 +9,23 @@ import { Camera, Object3D} from "three";
 import { useScroll } from "@react-three/drei";
 import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
-import projectState from "../../../public/waterfallAssets/Waterfall.theatre-project-state(2).json"
 
 // Theatre.js project sheet
 let mainSheet: ISheet;
 // if (process.env.NODE_ENV === 'development') {
 //     mainSheet = getProject('GlassProject').sheet('Glass');
 // }else{
-    mainSheet = getProject('GlassProject',{state:projectState}).sheet('Glass');
 // }
 
 export default function MyCamera() {
     const groupRef = useRef<Object3D>(null);
     const camRef = useRef<Camera>(null);
     const scroll = useScroll();
+    const {mainSheet} = usePageNavStore();
     const mySequence = mainSheet.sequence;
 
     const updatePage = usePageNavStore(state => state.updatePage);
+    const page = usePageNavStore(state => state.page);
 
     // Hide scrollbar
     useLayoutEffect(()=>{
@@ -77,35 +77,38 @@ export default function MyCamera() {
     }) 
 
     //************ Handle scrolling page by page ************//
+    const [currentPg, setCurrentPg] = useState(1);
 
-    let currentPage=0;
+    // let currentPage=0;
     const doScroll = (dir:number)=>{
         if(isSeqPlaying)return;
         let lr=0,ur=0;
-        if(dir>0 && currentPage<3){
-            currentPage+=1
-            if(currentPage==1){
+        if(dir>0 && currentPg<4){
+            if(currentPg==1){
                 lr=4,ur=8;
-            } else if(currentPage==2){
+            } else if(currentPg==2){
                 lr=8,ur=12;
             } else{
                 lr=12,ur=16;
             }
-            updatePage(currentPage+1);
+            updatePage(currentPg+1);
+            setCurrentPg(currentPg+1)
             mySequence.play({range: [lr, ur]});
+            // console.log(dir,currentPg)
         }
-        else if(dir<0 && currentPage>0){
-            currentPage-=1
-            if(currentPage==0){
+        else if(dir<0 && currentPg>1){
+            if(currentPg==2){
                 lr=4,ur=8;
-            } else if(currentPage==1){
+            } else if(currentPg==3){
                 lr=8,ur=12;
-            } else{
+            } else if(currentPg==4){
                 lr=12,ur=16;
             }
             scroll.delta=0;
-            updatePage(currentPage+1);
+            updatePage(currentPg-1);
+            setCurrentPg(currentPg-1)
             mySequence.play({range: [lr,ur],direction: "reverse"});
+            // console.log(dir,currentPg)
         }
     }
     let dir = 0
@@ -132,7 +135,6 @@ export default function MyCamera() {
             scroll.delta=0;
         }
         prevScroll=scroll.offset;
-
     })
 
     return (
