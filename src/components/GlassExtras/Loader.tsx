@@ -29,8 +29,9 @@ export default function Loader() {
         if(!ref.current) return;
             ref.current.style.display ="none";
         const logo = document.getElementsByClassName(styles2.logo).item(0);
-        var x = window.matchMedia("(max-device-width: 900px)");
+        const x = window.matchMedia("(max-device-width: 900px)");
         if (x.matches) { // If media query matches
+            window.scrollTo(0,1);
             // @ts-ignore
             logo.style.left = "40px";
             // @ts-ignore
@@ -53,13 +54,15 @@ export default function Loader() {
         if(!containerRef.current || !buttonRef.current) return;
         if(progress == 100){
             containerRef.current.style.backgroundColor="#fefefe00";
-            buttonRef.current.classList.add(styles.border);
+            // buttonRef.current.classList.add(styles.border);
             setTimeout(()=>{
                 if(!buttonRef.current) return;
                     buttonRef.current.style.paddingTop="10px";
                     buttonRef.current.style.paddingBottom="5px";
-                    buttonRef.current.style.paddingRight=buttonRef.current.style.paddingLeft="30px";
-                },1000)
+                    buttonRef.current.style.paddingRight=buttonRef.current.style.paddingLeft="40px";
+                    buttonRef.current.style.borderColor="#0e0e0e";
+                    buttonRef.current.style.borderRadius="5px";
+                },1000);
         }
     },[progress,containerRef,buttonRef])
 
