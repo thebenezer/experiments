@@ -61,7 +61,7 @@ export default function Loader() {
                     buttonRef.current.style.paddingRight=buttonRef.current.style.paddingLeft="30px";
                 },1000)
         }
-    },[progress,containerRef,buttonRef.current])
+    },[progress,containerRef,buttonRef])
 
     useEffect(()=>{
         if(!subRef.current) return;
