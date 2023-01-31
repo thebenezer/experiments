@@ -40,7 +40,7 @@ const GlassUI = () => {
         t4.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Waterfall Shader with Foam"}});
         t1.pause();t2.pause();t3.pause();t4.pause();
 
-    },[firstPageRef.current])
+    },[t1, t2, t3, t4,firstPageRef])
 
     
     useEffect(()=>{
