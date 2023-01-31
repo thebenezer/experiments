@@ -50,14 +50,12 @@ export default function Loader() {
     }
 
     useLayoutEffect(()=>{
-        if(!containerRef.current) return;
-        // if(!buttonRef.current) return;
+        if(!containerRef.current || !buttonRef.current) return;
         if(progress == 100){
-            // buttonRef.current.style.borderColor="#0e0e0e";
             containerRef.current.style.backgroundColor="#fefefe00";
+            buttonRef.current.classList.add(styles.border);
             setTimeout(()=>{
                 if(!buttonRef.current) return;
-                    buttonRef.current.classList.add(styles.border);
                     buttonRef.current.style.paddingTop="10px";
                     buttonRef.current.style.paddingBottom="5px";
                     buttonRef.current.style.paddingRight=buttonRef.current.style.paddingLeft="30px";
