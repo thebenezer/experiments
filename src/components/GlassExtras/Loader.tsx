@@ -85,7 +85,7 @@ export default function Loader() {
                     {progress!=100 && <div style={{textAlign:'center'}}>
                         {progress.toFixed(0)}%
                     </div>}
-                    {progress==100 && <p ref={buttonRef} className={styles.border} onClick={closeLoader}>
+                    {progress==100 && <p ref={buttonRef} className={styles.border} style={{padding:"10px 20px 5px 20px",border:"2px solid #0e0e0e",borderRadius:"5px",cursor:"pointer"}} onClick={closeLoader}>
                         Enter
                     </p>}
                 </div>
