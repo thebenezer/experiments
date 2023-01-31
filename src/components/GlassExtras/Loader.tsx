@@ -64,7 +64,7 @@ export default function Loader() {
                     buttonRef.current.style.borderRadius="5px";
                 },1000);
         }
-    },[progress,containerRef,buttonRef])
+    },[progress,containerRef.current,buttonRef.current])
 
     useEffect(()=>{
         if(!subRef.current) return;
