@@ -24,20 +24,25 @@ const GlassUI = () => {
     const headerRef=useRef<HTMLHeadingElement>(null);
     const firstPageRef=useRef<HTMLHeadingElement>(null);
 
-    var t1 = gsap.timeline({repeat: 0});
-    t1.to(firstPageRef.current, {duration: 0.1,text:{value:" "}});
-    t1.to(firstPageRef.current, {duration: 2,delay:0.5,text:{value:"An Experiment to Create A<br>Dynamic River and Waterfall Shader"}});
-    var t2 = gsap.timeline({repeat: 0});
-    t2.to(firstPageRef.current, {duration: 2,text:{value:" "}});
-    t2.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"One Geometry. One Shader."}});
-    var t3 = gsap.timeline({repeat: 0});
-    t3.to(firstPageRef.current, {duration: 2,text:{value:" "}});
-    t3.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Animated Camera with Theatre.js"}});
-    var t4 = gsap.timeline({repeat: 0});
-    t4.to(firstPageRef.current, {duration: 2,text:{value:" "}});
-    t4.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Waterfall Shader with Foam"}});
-    t1.pause();t2.pause();t3.pause();t4.pause();
+    let t1 = gsap.timeline({repeat: 0});
+    let t2 = gsap.timeline({repeat: 0});
+    let t3 = gsap.timeline({repeat: 0});
+    let t4 = gsap.timeline({repeat: 0});
+    useEffect(()=>{
+        if(!firstPageRef.current) return;
+        t1.to(firstPageRef.current, {duration: 0.1,text:{value:" "}});
+        t1.to(firstPageRef.current, {duration: 2,delay:0.5,text:{value:"An Experiment to Create A<br>Dynamic River and Waterfall Shader"}});
+        t2.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+        t2.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"One Geometry. One Shader."}});
+        t3.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+        t3.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Animated Camera with Theatre.js"}});
+        t4.to(firstPageRef.current, {duration: 2,text:{value:" "}});
+        t4.to(firstPageRef.current, {duration: 1,delay:0.5,text:{value:"Waterfall Shader with Foam"}});
+        t1.pause();t2.pause();t3.pause();t4.pause();
 
+    },[firstPageRef.current])
+
+    
     useEffect(()=>{
         if(!firstPageRef.current) return;
         gsap.delayedCall(0,()=>{

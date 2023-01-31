@@ -1,9 +1,9 @@
 import { Box, PerspectiveCamera, useProgress } from "@react-three/drei";
 import { editable as e, SheetProvider } from '@theatre/r3f';
-import studio from "@theatre/studio";
+// import studio from "@theatre/studio";
 import { useEffect, useState, useRef, useMemo, useLayoutEffect } from "react";
-import extension from '@theatre/r3f/dist/extension';
-import { ISheet, getProject, onChange} from "@theatre/core";
+// import extension from '@theatre/r3f/dist/extension';
+import { onChange} from "@theatre/core";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Camera, Object3D} from "three";
 import { useScroll } from "@react-three/drei";
@@ -11,7 +11,6 @@ import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
 
 // Theatre.js project sheet
-let mainSheet: ISheet;
 // if (process.env.NODE_ENV === 'development') {
 //     mainSheet = getProject('GlassProject').sheet('Glass');
 // }else{
@@ -64,10 +63,10 @@ export default function MyCamera() {
     useEffect(() => {
         if (!theatreInit) {
             if (process.env.NODE_ENV === 'development') {
-                studio.initialize()
-                studio.extend(extension)
+                // studio.initialize()
+                // studio.extend(extension)
             }
-            studio.ui.hide();
+            // studio.ui.hide();
             setTheatreInit(true);
               
         }

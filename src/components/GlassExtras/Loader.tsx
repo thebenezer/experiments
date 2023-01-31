@@ -2,7 +2,6 @@ import { Html, useProgress} from '@react-three/drei';
 import styles from '../GlassExtras/loader.module.css'
 import styles2 from '../../styles/glass.module.css'
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { getProject } from '@theatre/core';
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/dist/TextPlugin";
 import { usePageNavStore } from './usePageNavStore';
@@ -58,7 +57,7 @@ export default function Loader() {
             containerRef.current.style.backgroundColor="#fefefe00";
             setTimeout(()=>{
                 if(!buttonRef.current) return;
-                    // buttonRef.current.classList.add(styles.border);
+                    buttonRef.current.classList.add(styles.border);
                 },1000)
         }
     },[progress,containerRef,buttonRef.current])
@@ -66,7 +65,7 @@ export default function Loader() {
     useEffect(()=>{
         if(!subRef.current) return;
         gsap.registerPlugin(TextPlugin);
-        var tl = gsap.timeline({repeat: -1,repeatDelay:0.5});
+        let tl = gsap.timeline({repeat: -1,repeatDelay:0.5});
         tl.to(subRef.current, {duration: 1,delay:0.5,text:{value:"webgl"}});
         tl.to(subRef.current, {duration: 1,delay:0.5,text:{value:"threejs"}});
         tl.to(subRef.current, {duration: 1,delay:0.5,text:{value:"glsl"}});
