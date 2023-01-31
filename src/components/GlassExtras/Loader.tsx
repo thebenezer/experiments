@@ -58,6 +58,9 @@ export default function Loader() {
             setTimeout(()=>{
                 if(!buttonRef.current) return;
                     buttonRef.current.classList.add(styles.border);
+                    buttonRef.current.style.paddingTop="10px";
+                    buttonRef.current.style.paddingBottom="5px";
+                    buttonRef.current.style.paddingRight=buttonRef.current.style.paddingLeft="30px";
                 },1000)
         }
     },[progress,containerRef,buttonRef.current])
