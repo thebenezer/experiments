@@ -26,15 +26,42 @@
     transition: all 1s ease-in;
 }
 .soundToggle{
+    cursor: pointer;
     position: fixed;
-    z-index: 3;
+    z-index: 5;
     bottom: 80px;
     left: 105px;
-    cursor: pointer;
 }
 .soundOn,.soundOff {
     color: #313131;
     font-size: 24px;
+}
+.about{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    /* margin: 10px; */
+    /* display: flex; */
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: none;
+}
+.about div{
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+    margin: auto;
+    padding: 20px;
+    padding-top: 30%;
+    background-color: #0e0e0ead;
+    border-radius: 5px;
+    border: 2px solid #fefefe;
+    text-align: center;
+    line-height: 30px;
 }
 .header {
     position: fixed;
@@ -80,7 +107,7 @@
 .navSocial{
     position: fixed;
     bottom: 55px;
-    right: 0;
+    right: 40px;
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -89,6 +116,19 @@
 }
 .navSocial li{
     margin: 20px;
+}
+
+.scrollDirectionContainer{
+    position: fixed;
+    bottom: 10px;
+    z-index: 3;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+.scrollDirectionContainer div{
+    margin: auto;
 }
 
 @media only screen and (max-device-width: 900px){
@@ -101,16 +141,17 @@
     .sub{
         top: 200px;
     }
+    .about div{
+        max-width: 350px;
+        max-height: 500px;
+    }
     .header h2{
         line-height: 30px;
         font-size: 16px;
     }
     .soundToggle{
-        position: fixed;
-        z-index: 1;
         bottom: 30px;
-        left: 30px;
-        cursor: pointer;
+        left: 40px;
     }
     .soundOn,.soundOff {
         width: 20px;
@@ -141,6 +182,7 @@
         width: 40%;
         height: 2px;
         background-color: #313131;
+        border: 0.1px solid #fefefe;
         margin: 5px 0 5px 0;
         transition: all 0.5s ease;
     }
@@ -192,9 +234,14 @@
         margin: 50px 0;
     }
     .navSocial{
+        right: 0;
         position: relative;
         flex-direction: row;
         margin: 0 20px;
         justify-content: space-around;
     }
+
+    /* .navSocial li{
+        margin: 20px;
+    } */
 }

@@ -12,9 +12,11 @@ const Home: NextPage = () => {
         <meta name="description" content="Experiments" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
+      <div className={styles.center}>
+        <h1>Experiments</h1>
+        <p>Updating page UI and adding more experiments soon 😉</p>
         <ul>
-          <li><a href="./mandelbrot">mandelbrot</a></li>
+          {/* <li><a href="./mandelbrot">mandelbrot</a></li> */}
           <li><a href="./glass">waterfall</a></li>
         </ul>
       </div>

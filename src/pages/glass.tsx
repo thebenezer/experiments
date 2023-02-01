@@ -1,9 +1,9 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import ReactDOM from 'react-dom'
-import GlassCanvas from '../components/scenes/GlassCanvas'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import ReactDOM from 'react-dom';
+import GlassCanvas from '../components/scenes/GlassCanvas';
 import GlassUI from '../components/UI/GlassUI';
 
 const Glass: NextPage = () => {
@@ -19,7 +19,7 @@ const Glass: NextPage = () => {
       <footer>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Glass
+export default Glass;

@@ -9,7 +9,7 @@ void main(){
 
 	float waterfallFoamPos = 0.001;
 
-	vec4 inputTexture = texture2D(tex,vec2(UV.x,UV.y*5.+u_time*0.1));
+	vec4 inputTexture = texture2D(tex,vec2(UV.x,UV.y*5.+u_time*0.12));
 
 	float amplitude = 0.009;
 	float frequency = 30.;
