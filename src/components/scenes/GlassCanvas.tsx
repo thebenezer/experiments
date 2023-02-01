@@ -8,12 +8,14 @@ import { Suspense } from 'react';
 import Loader from '../GlassExtras/Loader';
 // @ts-ignore
 import Sfx from '../GlassExtras/Sfx';
+import styles from '../styles/Home.module.css'
 
 export default function GlassCanvas() {
     return (
         <>
             <Sfx />
             <Canvas
+            className={styles.canvas}
                 shadows
             >
                 <Loader />
