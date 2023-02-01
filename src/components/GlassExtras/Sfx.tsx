@@ -64,4 +64,3 @@ export default function Sfx() {
   return null;
 }
 
-export { Sfx };

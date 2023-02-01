@@ -6,7 +6,8 @@ import MyCamera from '../GlassExtras/MyCamera';
 import { ScrollControls } from '@react-three/drei';
 import { Suspense } from 'react';
 import Loader from '../GlassExtras/Loader';
-import Sfx from '../GlassExtras/sfx';
+// @ts-ignore
+import Sfx from '../GlassExtras/Sfx';
 
 export default function GlassCanvas() {
     return (
