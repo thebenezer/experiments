@@ -11,6 +11,10 @@ import { IconContext } from "react-icons";
 import { gsap } from "gsap";
 import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
+import useSound from 'use-sound';
+// import boopSfx from './waterfallAssets/CalmAndPeaceful.mp3';
+
+
 const GlassUI = () => {
 
     const navContainerRef = useRef<HTMLElement>(null);
@@ -18,6 +22,18 @@ const GlassUI = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const logoRef = useRef(null);
+
+    const [playActive] = useSound(
+        './waterfallAssets/click-21156.mp3',
+        { volume: 1 }
+    );
+    const [playMusic,{stop}] = useSound(
+        './waterfallAssets/CalmAndPeaceful.mp3',
+        { 
+            volume: 0.25,
+            loop:true
+        }
+    );
 
     const { page, enterSite, soundOn, setSoundOn } = usePageNavStore();
     const headerRef = useRef<HTMLHeadingElement>(null);
@@ -94,6 +110,7 @@ const GlassUI = () => {
                     if (!river.isPlaying) river.play();
                     setfirstPlay(false);
                 }
+                console.log(uiClick,music,river)
             });
         }
     }, [enterSite, music, waterfall]);
@@ -107,7 +124,7 @@ const GlassUI = () => {
                 soundListener.setMasterVolume(0);
             }, 300);
         }
-        uiClick?.play();
+        playActive();
         setSoundOn(!soundOn);
     };
     // Watch for fullscreenchange
