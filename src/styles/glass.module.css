@@ -51,7 +51,6 @@
     top: 0;
     left: 0;
     /* margin: 10px; */
-    /* display: flex; */
     opacity: 0;
     transition: all 0.3s ease;
 }
@@ -68,6 +67,12 @@
     border: 2px solid #fefefe;
     text-align: center;
     line-height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.about div p{
+    font-size: 12px;
 }
 .header {
     position: fixed;
@@ -181,7 +186,12 @@
     0% { transform: translateY(0); }
     100% { transform: translateY(5px); }
 }
-
+@media only screen and (max-device-width: 500px){
+    .about div{
+        max-width: 350px;
+        max-height: 500px;
+    }
+}
 @media only screen and (max-device-width: 900px){
     .logo{
         font-size: 2rem;
@@ -192,10 +202,7 @@
     .sub{
         top: 200px;
     }
-    .about div{
-        max-width: 350px;
-        max-height: 500px;
-    }
+    
     .header h2{
         line-height: 30px;
         font-size: 16px;

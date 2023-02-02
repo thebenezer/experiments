@@ -49,11 +49,11 @@ const GlassUI = () => {
 
     const [playHover] = useSound(
         './waterfallAssets/pop-up-on.mp3',
-        { volume: 0.5 }
+        { volume: 0.3 }
     );
     const [playClick] = useSound(
         './waterfallAssets/pop-down.mp3',
-        { volume: 0.5 }
+        { volume: 0.3 }
     );
     const [playMusic,{stop:stopMusic}] = useSound(
         './waterfallAssets/CalmAndPeaceful.mp3',
@@ -239,7 +239,14 @@ const GlassUI = () => {
                 </div>
                 <div ref={aboutRef} className={styles.about} style={{ display: "none" }} onClick={toggleAbout}>
                     <div>
-                        An experiment to create a river & waterfall shader turned out to become a mini project.<br></br><br></br>Scroll to explore.
+                        An experiment to create a river & waterfall shader turned out to become a mini project.
+                        <br></br><br></br>Scroll to explore.
+                        <p>
+                            <br></br><br></br>Music:<br></br>
+                            Calm and Peaceful by LesFM | https://lesfm.net/relaxing-background-music/
+                            <br></br><br></br>Sfx:<br></br>
+                            Freesound.org
+                        </p>
                     </div>
                 </div>
                 <header ref={headerRef} className={styles.header}>
