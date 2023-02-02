@@ -54,7 +54,6 @@
     /* display: flex; */
     opacity: 0;
     transition: all 0.3s ease;
-    display: none;
 }
 .about div{
     width: 100%;
@@ -79,13 +78,18 @@
     text-align: center;
     height: 100%;
     padding: 0 20px;
+    margin-top: 10%;
 }
 .header h2{
     margin: auto;
-    padding-top: 50vh;
+    /* padding-top: 50vh; */
+    margin-top: 50vh;
     flex: 1;
     line-height: 30px;
     font-size: 18px;
+    color: #313131;
+    -webkit-text-stroke: 1px #0e0e0e;
+    -webkit-text-fill-color: #fefefe;
 }
 .hamburger{
     display: none;
@@ -95,8 +99,9 @@
     position: fixed;
     z-index: 2;
     font-family: ghost_cove,-apple-system,sans-serif;
-    font-size: 1.4rem;
     color: #313131;
+    -webkit-text-stroke: 1px #0e0e0e;
+    -webkit-text-fill-color: #fefefe;
 }
 .navList{
     position: fixed;
@@ -107,9 +112,15 @@
     justify-content: center;
     text-align: center;
     list-style: none;
+    font-size: 18px;
 }
 .navList li{
     margin: 0 30px;
+}
+.navList li a{
+    color: #313131;
+    -webkit-text-stroke: 1px #0e0e0e;
+    -webkit-text-fill-color: #fefefe;
 }
 .navList li:hover{
     opacity: 0.8;
@@ -134,14 +145,41 @@
 .scrollDirectionContainer{
     position: fixed;
     bottom: 10px;
-    z-index: 3;
+    z-index: 2;
+    opacity: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     font-size: 12px;
+    transition: opacity 0.3s ease;
+    will-change: opacity;
 }
 .scrollDirectionContainer div{
     margin: auto;
+}
+.arrowUp {
+    -webkit-animation: moveUp 1s infinite  alternate;
+    animation: moveUp 1s infinite  alternate;
+}
+@-webkit-keyframes moveUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+@keyframes moveUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+.arrowDown {
+    -webkit-animation: moveDown 1s infinite  alternate;
+    animation: moveDown 1s infinite  alternate;
+}
+@-webkit-keyframes moveDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(5px); }
+}
+@keyframes moveDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(5px); }
 }
 
 @media only screen and (max-device-width: 900px){
@@ -168,6 +206,9 @@
     }
     .soundOn,.soundOff {
         width: 20px;
+    }
+    .scrollDirectionContainer{
+        bottom: 18px;
     }
     .hamburger{
         display: block;
@@ -254,7 +295,7 @@
         justify-content: space-around;
     }
 
-    /* .navSocial li{
-        margin: 20px;
-    } */
+    .header{
+        margin-top: 50%;
+    }
 }

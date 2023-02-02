@@ -12,6 +12,7 @@ import { gsap } from "gsap";
 import { usePageNavStore } from "../GlassExtras/usePageNavStore";
 
 import useSound from 'use-sound';
+import { onChange } from "@theatre/core";
 // import boopSfx from './waterfallAssets/CalmAndPeaceful.mp3';
 
 
@@ -20,16 +21,39 @@ const GlassUI = () => {
     const navContainerRef = useRef<HTMLElement>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [showScroll, setShowScroll] = useState(false);
+    const [waterfallIsPlaying, setWaterfallIsPlaying] = useState(false);
+
+    const { mainSheet, page, enterSite, soundOn, setSoundOn } = usePageNavStore();
+    const headerRef = useRef<HTMLHeadingElement>(null);
+    const aboutRef = useRef<HTMLDivElement>(null);
+    const firstPageRef = useRef<HTMLHeadingElement>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const logoRef = useRef(null);
 
+    onChange(mainSheet.sequence.pointer.playing, (playing) => {
+        if(showScroll==playing)
+            setShowScroll(!playing)
+    })
+    useEffect(()=>{
+        if(!scrollRef.current)return;
+        if(showScroll){
+            scrollRef.current.style.opacity = "1"
+        }else{
+            scrollRef.current.style.opacity = "0"
+
+        }
+    },[showScroll])
+
+
     const [playHover] = useSound(
         './waterfallAssets/pop-up-on.mp3',
-        { volume: 0.9 }
+        { volume: 0.5 }
     );
     const [playClick] = useSound(
         './waterfallAssets/pop-down.mp3',
-        { volume: 0.9 }
+        { volume: 0.5 }
     );
     const [playMusic,{stop:stopMusic}] = useSound(
         './waterfallAssets/CalmAndPeaceful.mp3',
@@ -41,7 +65,7 @@ const GlassUI = () => {
     const [playRiver,{stop:stopRiver}] = useSound(
         './waterfallAssets/River.mp3',
         { 
-            volume: 0.5,
+            volume: 0.3,
             loop:true
         }
     );
@@ -52,12 +76,6 @@ const GlassUI = () => {
             loop:true
         }
     );
-    const [waterfallIsPlaying, setWaterfallIsPlaying] = useState(false);
-
-    const { page, enterSite, soundOn, setSoundOn } = usePageNavStore();
-    const headerRef = useRef<HTMLHeadingElement>(null);
-    const aboutRef = useRef<HTMLDivElement>(null);
-    const firstPageRef = useRef<HTMLHeadingElement>(null);
 
     let t1 = gsap.timeline({ repeat: 0 });
     let t2 = gsap.timeline({ repeat: 0 });
@@ -92,10 +110,10 @@ const GlassUI = () => {
             }
             if(waterfallSound){
                 if (page == 4 && !waterfallIsPlaying) {
-                    waterfallSound.fade(0,0.3,1000);
+                    waterfallSound.fade(0,0.1,2000);
                     setWaterfallIsPlaying(true)
                 } else if(page==3 && waterfallIsPlaying) {
-                    waterfallSound.fade(0.3,0,1000);
+                    waterfallSound.fade(0.1,0,2000);
                     setWaterfallIsPlaying(false)
                 }
             }
@@ -150,7 +168,9 @@ const GlassUI = () => {
     }, []);
 
     const toggleAbout = () => {
+        console.log("hi")
         if (!aboutRef.current) return;
+        console.log("helloo")
         playClick();
         if (aboutRef.current.style.display == "none") {
             aboutRef.current.style.display = "flex";
@@ -159,7 +179,11 @@ const GlassUI = () => {
                 aboutRef.current.style.opacity = "1";
             }, 300);
         } else {
-            aboutRef.current.style.display = "none";
+            aboutRef.current.style.opacity = "0";
+            setTimeout(() => {
+                // @ts-ignore
+                aboutRef.current.style.display = "none";
+            }, 300);
         }
     };
     return (
@@ -208,20 +232,20 @@ const GlassUI = () => {
                         </li>
                     </ul>
                 </nav>
-            </>}
-            <div ref={aboutRef} className={styles.about} onClick={toggleAbout}>
-                <div>
-                    An experiment to create a river & waterfall shader turned out to become a mini project.<br></br><br></br>Scroll to explore.
+                <div ref={scrollRef} className={styles.scrollDirectionContainer}>
+                    <div className={styles.arrowUp}>{page > 1 ? <BsChevronCompactUp /> : " "}</div>
+                    <div>Scroll</div>
+                    <div className={styles.arrowDown}>{page != 4 ? <BsChevronCompactDown /> : <p>&nbsp;</p>}</div>
                 </div>
-            </div>
-            <header ref={headerRef} className={styles.header}>
-                <h2 ref={firstPageRef} style={{ display: "block" }}></h2>
-            </header>
-            <div className={styles.scrollDirectionContainer}>
-                <div>{page > 1 ? <BsChevronCompactUp /> : " "}</div>
-                <div>Scroll</div>
-                <div>{page != 4 ? <BsChevronCompactDown /> : " "}</div>
-            </div>
+                <div ref={aboutRef} className={styles.about} style={{ display: "none" }} onClick={toggleAbout}>
+                    <div>
+                        An experiment to create a river & waterfall shader turned out to become a mini project.<br></br><br></br>Scroll to explore.
+                    </div>
+                </div>
+                <header ref={headerRef} className={styles.header}>
+                    <h2 ref={firstPageRef} style={{ display: "block" }}></h2>
+                </header>
+            </>}
         </>
     );
 };

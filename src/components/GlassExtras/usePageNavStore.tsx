@@ -1,6 +1,6 @@
 import { ISheet, getProject } from '@theatre/core';
 import { create } from 'zustand';
-import projectState from "../../../public/waterfallAssets/GlassProject.theatre-project-state.json";
+import projectState from "../../../public/waterfallAssets/GlassProject3.theatre-project-state.json";
 import { AudioLoader, Audio, AudioListener } from 'three';
 
 interface IEnter {
@@ -29,7 +29,7 @@ export const usePageNavStore = create<IEnter>((set) => ({
     page: 0,
     updateEnterSite: () => { set({ enterSite: true }); },
     updatePage: (newPage: number) => { set({ page: newPage }); },
-    mainSheet: getProject('GlassProject4', { state: projectState }).sheet('Glass'),
+    mainSheet: getProject('GlassProjectfinal', { state: projectState }).sheet('Glass'),
     soundLoader: null,
     soundListener: null,
     soundOn: true,
