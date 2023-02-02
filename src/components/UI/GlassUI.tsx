@@ -23,17 +23,36 @@ const GlassUI = () => {
 
     const logoRef = useRef(null);
 
-    const [playActive] = useSound(
-        './waterfallAssets/click-21156.mp3',
-        { volume: 1 }
+    const [playHover] = useSound(
+        './waterfallAssets/pop-up-on.mp3',
+        { volume: 0.9 }
     );
-    const [playMusic,{stop}] = useSound(
+    const [playClick] = useSound(
+        './waterfallAssets/pop-down.mp3',
+        { volume: 0.9 }
+    );
+    const [playMusic,{stop:stopMusic}] = useSound(
         './waterfallAssets/CalmAndPeaceful.mp3',
         { 
-            volume: 1,
+            volume: 0.3,
             loop:true
         }
     );
+    const [playRiver,{stop:stopRiver}] = useSound(
+        './waterfallAssets/River.mp3',
+        { 
+            volume: 0.5,
+            loop:true
+        }
+    );
+    const [playWaterfall,{stop:stopWaterfall,sound:waterfallSound}] = useSound(
+        './waterfallAssets/WaterfallSmall.mp3',
+        { 
+            volume: 0,
+            loop:true
+        }
+    );
+    const [waterfallIsPlaying, setWaterfallIsPlaying] = useState(false);
 
     const { page, enterSite, soundOn, setSoundOn } = usePageNavStore();
     const headerRef = useRef<HTMLHeadingElement>(null);
@@ -71,20 +90,21 @@ const GlassUI = () => {
             } else if (page == 4) {
                 t4.play();
             }
-            // console.log(page,waterfall)
-
-            if (page == 4 && !waterfall?.isPlaying) {
-                waterfall?.play();
-                // console.log("hi")
-            } else {
-                if (waterfall?.isPlaying) waterfall.pause();
+            if(waterfallSound){
+                if (page == 4 && !waterfallIsPlaying) {
+                    waterfallSound.fade(0,0.3,1000);
+                    setWaterfallIsPlaying(true)
+                } else if(page==3 && waterfallIsPlaying) {
+                    waterfallSound.fade(0.3,0,1000);
+                    setWaterfallIsPlaying(false)
+                }
             }
         });
     }, [page]);
 
 
     const toggleMenu = () => {
-        if (!uiClick?.isPlaying) uiClick?.play();
+        playClick();
         if (!navContainerRef.current) return;
         if (isMenuOpen) {
             gsap.to(navContainerRef.current, { xPercent: 0, duration: 0.25 });
@@ -93,40 +113,30 @@ const GlassUI = () => {
         }
         setIsMenuOpen(!isMenuOpen);
     };
-    const { music, river, uiClick, waterfall, soundListener } = usePageNavStore();
     const [firstPlay, setfirstPlay] = useState(true);
+
+
     useMemo(() => {
         if (enterSite && firstPlay) {
-            gsap.delayedCall(1, () => {
-                if (uiClick && !uiClick.isPlaying) {
-                    uiClick.setVolume(1);
-                    uiClick.play();
-                }
-                if (music && river && waterfall) {
-                    music.setVolume(0.3);
-                    river.setVolume(0.3);
-                    waterfall.setVolume(0.1);
-                    if (!music.isPlaying) music.play();
-                    if (!river.isPlaying) river.play();
-                    setfirstPlay(false);
-                }
-                console.log(uiClick,music,river)
-            });
+            playClick();
+            playMusic();
+            playRiver();
+            playWaterfall();
+            setfirstPlay(false);
         }
-    }, [enterSite, music, waterfall]);
+    }, [enterSite]);
     const toggleSound = () => {
-        if (!soundListener) return;
+        playClick();
         if (soundOn) {
-            if (!music?.isPlaying) music?.play();
-            soundListener.setMasterVolume(1);
-            console.log("hi")
+            stopMusic();
+            stopRiver();
+            stopWaterfall();
         }
         else {
-            setTimeout(() => {
-                soundListener.setMasterVolume(0);
-            }, 300);
+            playMusic();
+            playRiver();
+            playWaterfall();
         }
-        playActive();
         setSoundOn(!soundOn);
     };
     // Watch for fullscreenchange
@@ -141,7 +151,7 @@ const GlassUI = () => {
 
     const toggleAbout = () => {
         if (!aboutRef.current) return;
-        if (!uiClick?.isPlaying) uiClick?.play();
+        playClick();
         if (aboutRef.current.style.display == "none") {
             aboutRef.current.style.display = "flex";
             setTimeout(() => {
@@ -154,7 +164,7 @@ const GlassUI = () => {
     };
     return (
         <>
-            <h1 ref={logoRef} className={styles.logo}>Glass</h1>
+            <h1 ref={logoRef} className={styles.logo} onMouseEnter={() => { playHover(); }}>Glass</h1>
 
             {enterSite && <>
                 <div className={styles.hamburger} onClick={toggleMenu}>
@@ -163,33 +173,33 @@ const GlassUI = () => {
                     <span className={styles.line3}></span>
                     <span className={styles.line4}></span>
                 </div>
-                <div className={styles.soundToggle} onClick={toggleSound}>
-                    <IconContext.Provider value={{ className: styles.soundOn, style: { display: !soundOn ? "none" : "block" } }}>
+                <div className={styles.soundToggle} onMouseEnter={() => { playHover(); }} onClick={toggleSound}>
+                    <IconContext.Provider value={{ className: styles.soundOn, style: { display: soundOn ? "none" : "block" } }}>
                         <AiOutlineSound />
                     </IconContext.Provider>
-                    <IconContext.Provider value={{ className: styles.soundOff, style: { display: soundOn ? "none" : "block" } }}>
+                    <IconContext.Provider value={{ className: styles.soundOff, style: { display: !soundOn ? "none" : "block" } }}>
                         <AiFillSound />
                     </IconContext.Provider>
                 </div>
                 <nav className={styles.navContainer} ref={navContainerRef}>
 
                     <ul className={styles.navList}>
-                        <li><a onClick={toggleAbout} onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>about</a></li>
-                        <li><a href="../" onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>experiments</a></li>
-                        <li><a href="https://www.thebenezer.com" onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>portfolio</a></li>
+                        <li><a style={{cursor:"pointer"}} onClick={toggleAbout} onMouseEnter={() => { playHover(); }}>about</a></li>
+                        <li><a href="../" onMouseEnter={() => { playHover(); }}>experiments</a></li>
+                        <li><a href="https://www.thebenezer.com" onMouseEnter={() => { playHover(); }}>portfolio</a></li>
                         <li>
                             <ul className={styles.navSocial}>
-                                <li onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>
+                                <li onMouseEnter={() => { playHover(); }}>
                                     <a target={"blank"} href="https://github.com/thebenezer"><IconContext.Provider value={{ className: styles.gitIcon }}>
                                         <FaGithubAlt />
                                     </IconContext.Provider></a>
                                 </li>
-                                <li onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>
+                                <li onMouseEnter={() => { playHover(); }}>
                                     <a target={"blank"} href="https://twitter.com/th_ebenezer"><IconContext.Provider value={{ className: styles.gitIcon }}>
                                         <FaTwitter />
                                     </IconContext.Provider></a>
                                 </li>
-                                <li onMouseEnter={() => { if (!uiClick?.isPlaying) uiClick?.play(); }}>
+                                <li onMouseEnter={() => { playHover(); }}>
                                     <a target={"blank"} href="mailto: thebenezer.mail@gmail.com"><IconContext.Provider value={{ className: styles.gitIcon }}>
                                         <AiFillMail />
                                     </IconContext.Provider></a>
@@ -208,7 +218,7 @@ const GlassUI = () => {
                 <h2 ref={firstPageRef} style={{ display: "block" }}></h2>
             </header>
             <div className={styles.scrollDirectionContainer}>
-                <div>{page != 1 ? <BsChevronCompactUp /> : " "}</div>
+                <div>{page > 1 ? <BsChevronCompactUp /> : " "}</div>
                 <div>Scroll</div>
                 <div>{page != 4 ? <BsChevronCompactDown /> : " "}</div>
             </div>

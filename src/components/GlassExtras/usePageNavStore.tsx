@@ -32,7 +32,7 @@ export const usePageNavStore = create<IEnter>((set) => ({
     mainSheet: getProject('GlassProject4', { state: projectState }).sheet('Glass'),
     soundLoader: null,
     soundListener: null,
-    soundOn: false,
+    soundOn: true,
     music: null,
     uiClick: null,
     river: null,

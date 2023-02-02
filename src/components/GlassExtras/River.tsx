@@ -37,16 +37,12 @@ export default function River(){
           fog:true
     });
 
-    // const reflectionEnv = useTexture("./textures/studio_small_05_1k.jpg");
 
     const mountainMat = new MeshPhysicalMaterial({
         color: 0xbbffff,
         metalness: 0.00,
         roughness: 0.50,
         ior: 2,
-        // envMap: reflectionEnv,
-        // envMapIntensity:1,
-        // reflectivity:0.20,
         transmission: 1, // use material.transmission for glass materials
         // specularIntensity: 10,
         // specularColor: new Color(0xff0000),
@@ -82,8 +78,6 @@ export default function River(){
         metalness: 0.00,
         roughness: 0.00,
         ior: 2.2,
-        // envMap: reflectionEnv,
-        // envMapIntensity:1,
         reflectivity:1,
         transmission: 2, // use material.transmission for glass materials
         specularIntensity: 1,
@@ -158,5 +152,4 @@ export default function River(){
     )
 }
 useGLTF.preload('./models/glass1.glb');
-useTexture.preload('./textures/studio_small_05_1k.jpg')
 useTexture.preload('./textures/peter-burroughs-tilingwater.jpg')
