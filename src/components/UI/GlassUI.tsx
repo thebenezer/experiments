@@ -30,7 +30,7 @@ const GlassUI = () => {
     const [playMusic,{stop}] = useSound(
         './waterfallAssets/CalmAndPeaceful.mp3',
         { 
-            volume: 0.25,
+            volume: 1,
             loop:true
         }
     );
@@ -117,7 +117,9 @@ const GlassUI = () => {
     const toggleSound = () => {
         if (!soundListener) return;
         if (soundOn) {
+            if (!music?.isPlaying) music?.play();
             soundListener.setMasterVolume(1);
+            console.log("hi")
         }
         else {
             setTimeout(() => {
