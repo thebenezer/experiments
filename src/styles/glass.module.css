@@ -145,7 +145,7 @@
 .scrollDirectionContainer{
     position: fixed;
     bottom: 10px;
-    z-index: 2;
+    z-index: 1;
     opacity: 0;
     width: 100%;
     display: flex;
@@ -276,6 +276,7 @@
         transition: all 0.5s ease;
         color: #fefefe;
         font-size: 14px;
+        will-change: transform;
     }
     .navList{
         position: relative;
@@ -286,6 +287,12 @@
     }
     .navList li{
         margin: 50px 0;
+    }
+    .navList li a{
+        margin: 50px 0;
+        color: #fefefe;
+        -webkit-text-stroke: 0px #0e0e0e;
+        /* -webkit-text-fill-color: #fefefe; */
     }
     .navSocial{
         right: 0;
